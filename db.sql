@@ -1,11 +1,22 @@
+# table for user
+# type: student, teacher, admin
+CREATE TABLE IF NOT EXISTS users ( 
+id INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(30),
+password VARCHAR(20),
+active VARCHAR(20),
+photo VARCHAR(50),
+type VARCHAR(10),
+PRIMARY KEY (id)
+);
+
 # table for student information
 CREATE TABLE IF NOT EXISTS students ( 
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 name VARCHAR(30),
 country VARCHAR(20),
 primary_lang VARCHAR(20),
 jap_level VARCHAR(10),
-photo VARCHAR(50),
 note VARCHAR(500),
 PRIMARY KEY (id)
 );
@@ -13,7 +24,7 @@ PRIMARY KEY (id)
 # table for teacher information
 # color: HEX code
 CREATE TABLE IF NOT EXISTS teacher ( 
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL,
 name VARCHAR(30),
 color INT,
 PRIMARY KEY (id)
