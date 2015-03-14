@@ -31,7 +31,7 @@ ifconfig
 install updates and other software:
 ```
 yum -y update
-yum install wget gcc gcc-c++
+yum install wget gcc gcc-c++ mysql-server
 ```
 
 install nodejs
@@ -45,6 +45,7 @@ make
 make install
 ```
 
-# install nodejs modules and other stuff
-
-(coming soon)
+iptables
+```
+iptables -I INPUT -j ACCEPT
+```
