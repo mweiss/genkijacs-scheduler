@@ -65,7 +65,7 @@ PRIMARY KEY (id)
 # table for rooms
 CREATE TABLE IF NOT EXISTS rooms ( 
 id INT NOT NULL AUTO_INCREMENT,
-name,
+name VARCHAR(20),
 capacity TINYINT,
 creation_date DATETIME,
 archive_date DATETIME,
