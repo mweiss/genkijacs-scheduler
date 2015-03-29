@@ -4,9 +4,9 @@ if (!global.Intl) {
     global.Intl = require('intl');
 }
 
-var React     = require('react');
-var DataTable = require('./DataTable.react');
-var TeacherStore = require('../stores/TeacherStore');
+var React          = require('react');
+var DataTable      = require('./DataTable.react');
+var TeacherStore   = require('../stores/TeacherStore');
 var TeacherActions = require('../actions/TeacherActions');
 
 function getColumns() {
@@ -49,8 +49,15 @@ function getColumns() {
     }];
 }
 
-var TeacherTable = React.createClass({
+// TODO: need to get rid of this and only include what's needed
+function getTeacherTableState() {
+  return {
+    teachers: TeacherStore.getAllTeachers()
+  };
+}
 
+
+var AddTeacherButton = React.createClass({
   getInitialState: function() {
     return {};
   },
@@ -63,9 +70,38 @@ var TeacherTable = React.createClass({
     // TODO: fill this in
   },
 
+  _addTeacher: function() {
+    TeacherActions.new();
+  },
+
   render: function() {
-    return (<DataTable data={TeacherStore.getAllTeachers()} actions={TeacherActions} columns={getColumns()} />)
+    return (<button onClick={this._addTeacher}>Add teacher</button>)
   }
 });
+
+var TeacherTable = React.createClass({
+
+  getInitialState: function() {
+    return {};
+  },
+
+  componentDidMount: function() {
+    TeacherStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    TeacherStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function() {
+    this.setState(getTeacherTableState());
+  },
+
+  render: function() {
+    return (<div><DataTable data={TeacherStore.getAllTeachers()} actions={TeacherActions} columns={getColumns()}></DataTable>
+            <AddTeacherButton></AddTeacherButton></div>)
+  }
+});
+
 
 module.exports = TeacherTable;

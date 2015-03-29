@@ -54,6 +54,7 @@ var TextInput = React.createClass({
     this.setState({
       value: event.target.value
     });
+    this._save();
   },
 
   _onKeyDown: function(event) {

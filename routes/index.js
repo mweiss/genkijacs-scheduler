@@ -16,9 +16,9 @@ router.get('/teachers', function(req, res) {
   });
 });
 
-router.post('/teachers/edit', function(req, res) {
-  console.log('testing teacher edits');
-  res.send('["test"]');
+router.post('/teachers', function(req, res) {
+  console.log('TODO: implement edit/insert into teachers');
+  res.status(200).json(null);
 });
 
 module.exports = router;
