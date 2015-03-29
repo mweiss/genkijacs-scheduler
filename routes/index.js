@@ -16,4 +16,9 @@ router.get('/teachers', function(req, res) {
   });
 });
 
+router.post('/teachers/edit', function(req, res) {
+  console.log('testing teacher edits');
+  res.send('["test"]');
+});
+
 module.exports = router;
