@@ -1,97 +1,35 @@
 "use strict";
 
-var AppDispatcher = require("../dispatcher/AppDispatcher");
-var EventEmitter = require("events").EventEmitter;
-var TeacherConstants = require("../constants/TeacherConstants");
 var assign = require("object-assign");
-var _ = require("underscore");
 
-var CHANGE_EVENT = "change";
-
-// For now, the teachers are hardcoded in an array. TODO:
-// improve to id mapped array, fetch or update from
-// server, although that might not be directly done by the store
-var _teachers = [];
-var _teacherMap = {};
-
-var _id_counter = 0;
+var AppDispatcher = require("../dispatcher/AppDispatcher");
+var TeacherConstants = require("../constants/TeacherConstants");
+var FluxStore = require("./FluxStore");
 
 // TODO: figure out what the right colors are for this
 var _colors = ["#F0F8FF", "#FAEBD7", "#00FFFF"];
 
-function incrementCounter() {
-  return _id_counter++;
-}
-
-
-var TeacherStore = assign({}, EventEmitter.prototype, {
-
-  getAllTeachers: function() {
-    return _teachers;
-  },
-
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
-
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-  updateTeacher: function(data) {
-    var old = _teacherMap[data.ui_id];
-    if (old) {
-      _.extend(old, data);
-      if (old._new) {
-        old._new = false;
-      }
-      this.emitChange();
-    }
-  },
-
-  setTeachers: function(teachers) {
-    _teachers = teachers;
-    _teacherMap = {};
-    _.each(teachers, function(t) {
-      t.ui_id = incrementCounter();
-      _teacherMap[t.ui_id] = t;
-    });
-    this.emitChange();
-  },
-
-  addNewTeacher: function() {
-    var ui_id = incrementCounter();
-
-    var teacher = {
-      "ui_id": ui_id,
+var TeacherStore = assign(FluxStore.createStore(), {
+  initEntity: function(ui_id) {
+    return {
       "name_jp": "",
       "name_en": "",
-      "_new": true,
       "color": _colors[ui_id % _colors.length],
       "classHours": 32,
       "privateHours": 0,
       "groupHours": 11
     };
-
-    _teachers.push(teacher);
-    _teacherMap[ui_id] = teacher;
-
-    this.emitChange();
   }
 });
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case TeacherConstants.TEACHER_SAVE:
-      TeacherStore.updateTeacher(action.row);
+      TeacherStore.save(action.row);
       break;
 
     case TeacherConstants.TEACHER_NEW:
-      TeacherStore.addNewTeacher();
+      TeacherStore.append();
       break;
 
     default:
@@ -101,7 +39,7 @@ AppDispatcher.register(function(action) {
 
 // TODO: this is just here to simulate a network request to the teacher store,
 // I need to get this working for realz
-TeacherStore.setTeachers([{
+TeacherStore.setAll([{
       "id":1, 
       "name_jp": "ともえ",
       "name_en": "Tomoe",

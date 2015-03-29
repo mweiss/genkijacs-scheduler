@@ -52,7 +52,7 @@ function getColumns() {
 // TODO: need to get rid of this and only include what's needed
 function getTeacherTableState() {
   return {
-    teachers: TeacherStore.getAllTeachers()
+    teachers: TeacherStore.all()
   };
 }
 
@@ -82,7 +82,7 @@ var AddTeacherButton = React.createClass({
 var TeacherTab = React.createClass({
 
   getInitialState: function() {
-    return {};
+    return getTeacherTableState();
   },
 
   componentDidMount: function() {
@@ -98,7 +98,7 @@ var TeacherTab = React.createClass({
   },
 
   render: function() {
-    return (<div><DataTable data={TeacherStore.getAllTeachers()} actions={TeacherActions} columns={getColumns()}></DataTable>
+    return (<div><DataTable data={this.state.teachers} actions={TeacherActions} columns={getColumns()}></DataTable>
             <AddTeacherButton></AddTeacherButton></div>)
   }
 });

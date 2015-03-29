@@ -91,6 +91,7 @@ var DataTableRow = React.createClass({
   },
 
   _resetEditValues: function() {
+    console.log('reset values');
     if (this.state.editColumnKey) {
       this._initializeEditValues();
     }
@@ -122,6 +123,7 @@ var DataTableRow = React.createClass({
   },
 
   _initializeEditValues: function() {
+        console.log('init values');
     var columnsToCopy = _.reduce(this.props.columns, function(arr, c) {
       if (c.editable) {
         arr.push(c.key);
@@ -139,6 +141,7 @@ var DataTableRow = React.createClass({
 
   updateRow: function() {
     if (this.props.actions.save) {
+      console.log(this._editValues);
       this.props.actions.save(this._editValues);
       this._resetEditValues();
       this.setState({editColumnKey: null});
@@ -160,10 +163,13 @@ var DataTableRow = React.createClass({
     };
 
     var editingFunc = !column.editable ? noop : function() {
-      self._setEditing(column.key);
+      if (!self.state.editColumnKey) {
+        self._setEditing(column.key);
+      }
     };
 
     var onSave = function(value) {
+      console.log('new value', value);
       self._editValues[column.key] = value;
     };
 
