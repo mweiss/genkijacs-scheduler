@@ -9,9 +9,6 @@
 
 var React = require('react');
 
-var TeacherTable = require('./components/TeacherTable.react');
+var App = require('./components/GenkiSchedulerApp.react');
 
-React.render(
-  <TeacherTable />,
-  document.getElementById('teachertable')
-);
+App.render();

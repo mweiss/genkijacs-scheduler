@@ -12,8 +12,9 @@
     "react-intl": "^1.2.0",
     "keymirror": "~0.1.0",
     "object-assign": "^1.0.0",
-    "react": "^0.12.0",
-    "reqwest": "1.1.5"
+    "react": "^0.13.1",
+    "reqwest": "1.1.5",
+    "react-router": "0.13.2"
   },
   "devDependencies": {
     "browserify": "^6.2.0",

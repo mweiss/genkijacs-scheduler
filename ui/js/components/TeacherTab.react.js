@@ -79,7 +79,7 @@ var AddTeacherButton = React.createClass({
   }
 });
 
-var TeacherTable = React.createClass({
+var TeacherTab = React.createClass({
 
   getInitialState: function() {
     return {};
@@ -104,4 +104,4 @@ var TeacherTable = React.createClass({
 });
 
 
-module.exports = TeacherTable;
+module.exports = TeacherTab;
