@@ -37,6 +37,7 @@ AppDispatcher.register(function(action) {
 });
 
 StudentStore.setAll([{
+  "id":1, 
   "name_jp": "マイケル　ワイス",
   "name_en": "Michael Weiss",
   "enrollment_intervals": [{start: "2015-01-03T00:00:00.000Z", end: "2015-05-30T00:00:00.000Z"}],
@@ -46,6 +47,7 @@ StudentStore.setAll([{
   "notes": "かっこいい！",
   "birthday": "1986-03-21T00:00:00.000Z"
 }, {
+  "id":2, 
   "name_jp": "サシャ　ドウシェン",
   "name_en": "Sascha Duschen",
   "enrollment_intervals": [{start: "2015-01-10T00:00:00.000Z", end: "2015-06-12T00:00:00.000Z"}],

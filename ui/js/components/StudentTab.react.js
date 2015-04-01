@@ -33,7 +33,6 @@ function getColumns() {
       header: "授業",
       key: "class",
       renderer: ClassesList,
-      formatter: "number",
       sortable: true,
       editable: true
     },

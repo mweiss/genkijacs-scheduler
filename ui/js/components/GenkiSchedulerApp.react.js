@@ -9,6 +9,8 @@ var RouteHandler = Router.RouteHandler;
 
 var TeacherTab = require('./TeacherTab.react');
 var StudentTab = require('./StudentTab.react');
+var ClassTab = require('./ClassTab.react');
+
 
 var GenkiSchedulerApp = React.createClass({
   getInitialState: function() {
@@ -51,7 +53,7 @@ var EmptyTab = React.createClass({
 var routes = (
   <Route name="app" path="/" handler={GenkiSchedulerApp}>
     <Route name="schedule" handler={EmptyTab}/>
-    <Route name="classes" handler={EmptyTab}/>
+    <Route name="classes" handler={ClassTab}/>
     <Route name="teachers" handler={TeacherTab}/>
     <Route name="students" handler={StudentTab}/>
     <DefaultRoute handler={TeacherTab}/>
