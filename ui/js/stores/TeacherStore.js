@@ -3,7 +3,7 @@
 var assign = require("object-assign");
 
 var AppDispatcher = require("../dispatcher/AppDispatcher");
-var TeacherConstants = require("../constants/TeacherConstants");
+var SchedulerConstants = require("../constants/SchedulerConstants");
 var FluxStore = require("./FluxStore");
 
 // TODO: figure out what the right colors are for this
@@ -24,11 +24,11 @@ var TeacherStore = assign(FluxStore.createStore(), {
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case TeacherConstants.TEACHER_SAVE:
+    case SchedulerConstants.TEACHER_SAVE:
       TeacherStore.save(action.row);
       break;
 
-    case TeacherConstants.TEACHER_NEW:
+    case SchedulerConstants.TEACHER_NEW:
       TeacherStore.append();
       break;
 

@@ -12,9 +12,6 @@ function incrementCounter() {
   return _id_counter++;
 }
 
-/**
- *
- */
 function createStore() {
   var _values = [];
   var _valueMap = {};

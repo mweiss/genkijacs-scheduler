@@ -1,9 +1,5 @@
 "use strict";
 
-if (!global.Intl) {
-    global.Intl = require('intl');
-}
-
 var React          = require('react');
 var DataTable      = require('./DataTable.react');
 var TeacherStore   = require('../stores/TeacherStore');
@@ -56,29 +52,6 @@ function getTeacherTableState() {
   };
 }
 
-
-var AddTeacherButton = React.createClass({
-  getInitialState: function() {
-    return {};
-  },
-
-  componentDidMount: function() {
-    // TODO: fill this in
-  },
-
-  componentWillUnmount: function() {
-    // TODO: fill this in
-  },
-
-  _addTeacher: function() {
-    TeacherActions.new();
-  },
-
-  render: function() {
-    return (<button onClick={this._addTeacher}>Add teacher</button>)
-  }
-});
-
 var TeacherTab = React.createClass({
 
   getInitialState: function() {
@@ -99,7 +72,7 @@ var TeacherTab = React.createClass({
 
   render: function() {
     return (<div><DataTable data={this.state.teachers} actions={TeacherActions} columns={getColumns()}></DataTable>
-            <AddTeacherButton></AddTeacherButton></div>)
+            <button onClick={TeacherActions.new}>Add teacher</button></div>)
   }
 });
 
