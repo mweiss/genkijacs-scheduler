@@ -2,10 +2,10 @@
 
 var React          = require("react");
 var DataTable      = require("./DataTable.react");
+var EnrollmentDateList  = require('./EnrollmentDateList.react');
 var StudentStore   = require("../stores/StudentStore");
 var StudentActions = require("../actions/StudentActions");
 
-var EnrollmentDateList  = {}; // TODO implement this
 var ClassesList = {}; // TODO: implement
 
 function getColumns() {
@@ -13,44 +13,50 @@ function getColumns() {
     {
       header: "名前",
       key: "name_jp",
+      width: 150,
       editable: true,
       sortable: true
     },
     {
       header: "Name",
       key: "name_en",
+      width: 150,
       editable: true,
       sortable: true
     },
     {
       header: "Enrollment date", // TODO: jp translation
-      key: "enrollmentDates",
+      key: "enrollment_intervals",
       renderer: EnrollmentDateList,
+      width: 150,
       editable: true,
       sortable: true
     },
     {
       header: "授業",
       key: "class",
-      renderer: ClassesList,
+      width: 100,
       sortable: true,
       editable: true
     },
     {
       header: "母国語",
       key: "primary_language",
+      width: 80,
       sortable: true,
       editable: true
     },
     {
       header: "国籍",
       key: "home_country",
+      width: 70,
       sortable: true,
       editable: true
     },
     {
       header: "日本語レベル",
       key: "japanese_proficiency",
+      width: 90,
       sortable: true,
       editable: true
     },

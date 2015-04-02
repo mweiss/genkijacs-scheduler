@@ -10,35 +10,41 @@ function getColumns() {
     {
       header: "名前",
       key: "name_jp",
+      width: 200,
       editable: true,
       sortable: true
     },
     {
       header: "Name",
       key: "name_en",
+      width: 200,
       editable: true,
       sortable: true
     },
     {
       header: "Color",
       key: "color",
+      width: 60,
       editable: true,
       sortable: true
     },
     {
       header: "授業時間",
       key: "classHours",
+      width: 70,
       formatter: "number",
       sortable: true
     },
     {
       header: "グループ授業時間",
       key: "groupHours",
+      width: 130,
       formatter: "number",
       sortable: true
     },
     {
       header: "個人授業時間",
+      width: 100,
       key: "privateHours",
       formatter: "number",
       sortable: true

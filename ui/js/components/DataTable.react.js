@@ -28,15 +28,15 @@ var DataTable = React.createClass({
   render: function() {
     var data = this.props.data || [],
         columns = this.props.columns || [],
-        headers = columns.map(function(v) { return v.header || ''; });
+        headers = columns.map(function(v) { return { header: v.header || '', width: v.width }; });
 
-    var rows = data.map(function(d) {
+    var rows = data.map(function(d, index) {
       var id = 'dtr-' + d.ui_id;
-      return (<DataTableRow actions={this.props.actions} key={id} data={d} columns={columns} />);
+      return (<DataTableRow index={index} actions={this.props.actions} key={id} data={d} columns={columns} />);
     }, this);
 
     return (
-      <div><table><DataTableHeader headers={headers} />{rows}</table></div>
+      <div className="DataTable"><table><DataTableHeader headers={headers} />{rows}</table></div>
     );
   }
 });
@@ -58,7 +58,11 @@ var DataTableHeader = React.createClass({
     var headers = this.props.headers || [];
 
     var tableHeaders = headers.map(function(v) {
-      return (<th key={v}>{v}</th>);
+      var styles = {};
+      if (typeof v.width === 'number') {
+        styles.width = v.width + "px";
+      }
+      return (<th style={styles} key={v.header}>{v.header}</th>);
     });
 
     return (<tr>{tableHeaders}</tr>);
@@ -91,7 +95,6 @@ var DataTableRow = React.createClass({
   },
 
   _resetEditValues: function() {
-    console.log('reset values');
     if (this.state.editColumnKey) {
       this._initializeEditValues();
     }
@@ -123,7 +126,6 @@ var DataTableRow = React.createClass({
   },
 
   _initializeEditValues: function() {
-        console.log('init values');
     var columnsToCopy = _.reduce(this.props.columns, function(arr, c) {
       if (c.editable) {
         arr.push(c.key);
@@ -141,45 +143,50 @@ var DataTableRow = React.createClass({
 
   updateRow: function() {
     if (this.props.actions.save) {
-      console.log(this._editValues);
       this.props.actions.save(this._editValues);
       this._resetEditValues();
       this.setState({editColumnKey: null});
     }
   },
 
+  fetchEditingFunction: function(column) {
+    var editingFunc = null;
+    if (column.editable && !this.state.editColumnKey) {
+      editingFunc = _.bind(function() {
+        this._setEditing(column.key);
+      }, this);
+    }
+    return editingFunc;
+  },
+
   _createCell: function(column) {
-    var data = this.props.data,
-        v = data[column.key],
+    var data      = this.props.data,
+        v         = data[column.key],
         formatter = this._resolveFormatter(column.formatter),
-        formattedValue = formatter(v),
-        cellValue = formattedValue,
-        autoFocus = this.state.editColumnKey === column.key;
-
-    var self = this;
+        Renderer  = column.renderer,
+        autoFocus = this.state.editColumnKey === column.key,
+        isEditing = this.state.editColumnKey,
+        cellValue;
     
-    function noop() {
-      // do nothing
-    };
+    var editingFunc = this.fetchEditingFunction(column);
 
-    var editingFunc = !column.editable ? noop : function() {
-      if (!self.state.editColumnKey) {
-        self._setEditing(column.key);
-      }
-    };
-
-    var onSave = function(value) {
-      console.log('new value', value);
-      self._editValues[column.key] = value;
-    };
+    var onSave = _.bind(function(value) {
+      this._editValues[column.key] = value;
+    }, this);
 
     var key = 'dtrc-' + data.ui_id + '-' + column.key;
 
-    if (this.state.editColumnKey && column.editable) {
+    if (Renderer) {
+      cellValue = <Renderer editing={isEditing} formatter={formatter} key={key} autoFocus={autoFocus} data={data} value={v} onSave={onSave} />;
+    }
+    else if (this.state.editColumnKey && column.editable) {
       cellValue = (<TextInput key={key} autoFocus={autoFocus} value={v} onSave={onSave} />);
     }
+    else {
+      cellValue = formatter(v);
+    }
 
-    return (<td onClick={editingFunc} key={key}>{cellValue}</td>);
+    return (<td onClick={editingFunc} key={key}><div>{cellValue}</div></td>);
   },
 
   render: function() {
@@ -188,10 +195,10 @@ var DataTableRow = React.createClass({
 
     var id = 'save';
     if (this.state.editColumnKey) {
-      cells.push((<td key={id}><button onClick={this.updateRow}>Save</button></td>));
+      cells.push((<td className="save" key={id}><div><button onClick={this.updateRow}>Save</button></div></td>));
     }
 
-    return (<tr>{cells}</tr>) ;
+    return (<tr className={this.props.index % 2 === 0 ? 'DataTable__even' : 'DataTable__odd'}>{cells}</tr>) ;
   }
 
 });

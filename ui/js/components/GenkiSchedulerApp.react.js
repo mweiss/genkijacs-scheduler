@@ -27,7 +27,7 @@ var GenkiSchedulerApp = React.createClass({
 
   render: function() {
      return (
-      <div>
+      <div className="GenkiScheduler">
         <header>
           <ul>
             <li><Link to="schedule">Schedule</Link></li>
@@ -38,7 +38,9 @@ var GenkiSchedulerApp = React.createClass({
         </header>
 
         {/* this is the important part */}
+        <div className="main">
         <RouteHandler/>
+        </div>
       </div>
     );
   }

@@ -1,0 +1,17 @@
+.DataTable {
+  font-size: 14px; }
+  .DataTable th {
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    text-indent: 5px; }
+  .DataTable td {
+    border-bottom: 1px solid #cccccc; }
+  .DataTable td.save {
+    background-color: white;
+    border-bottom: 0px none; }
+  .DataTable td > div {
+    padding: 6px 8px 6px 8px; }
+  .DataTable__even {
+    background-color: #f9f9f9; }
+  .DataTable input {
+    width: 100%; }
