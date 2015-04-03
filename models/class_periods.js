@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     class_id: DataTypes.INTEGER,
     room_id: DataTypes.INTEGER,
     teacher_id: DataTypes.INTEGER,
-    kind: DataTypes.STRING(20)
+    kind: DataTypes.STRING
   });
 
   Class_periods.associate = function(db) {

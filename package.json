@@ -12,14 +12,9 @@
     "express": "^4.12.3",
     "jade": "~1.9.2",
     "morgan": "~1.5.1",
-<<<<<<< HEAD
     "sequelize-cli": "^1.5.0",
-    "serve-favicon": "~2.2.0"
-=======
     "serve-favicon": "~2.2.0",
     "sequelize": "~2.0.4",
     "mysql": "~2.5.5",
-    "sequelize-cli": "~1.4.0"
->>>>>>> 8ee83c7aebec074b602816c57d61930d1f4ef2f0
   }
 }

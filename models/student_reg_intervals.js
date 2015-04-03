@@ -6,6 +6,6 @@ module.exports = function(sequelize, DataTypes) {
     student_id: DataTypes.INTEGER,
     creation_date: DataTypes.DATE,
     archive_date: DataTypes.DATE,
-    type: DataTypes.STRING(20)
+    type: DataTypes.STRING
   });
 };
