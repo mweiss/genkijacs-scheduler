@@ -1,9 +1,12 @@
+'use strict';
+
 var express = require('express');
+var db = require('../models/index');
 var router = express.Router();
 var db = require('../models/index');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
 });
 

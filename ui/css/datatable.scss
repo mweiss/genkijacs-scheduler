@@ -1,0 +1,33 @@
+$ns: DataTable;
+
+.#{$ns} {
+  font-size: 14px;
+
+  th {
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    text-indent: 5px;
+  }
+
+  td {
+    border-bottom: 1px solid #cccccc;
+  }
+
+  td.save {
+    background-color: white;
+    border-bottom: 0px none;
+  }
+
+  td > div {
+    padding: 6px 8px 6px 8px;
+  }
+
+  
+  &__even {
+    background-color: #f9f9f9;
+  }
+
+  input {
+    width: 100%
+  }
+}

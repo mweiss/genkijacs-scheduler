@@ -1,0 +1,13 @@
+.GenkiScheduler {
+  padding: 10px; }
+  .GenkiScheduler header {
+    margin-bottom: 50px; }
+    .GenkiScheduler header ul {
+      list-style-type: none; }
+    .GenkiScheduler header li {
+      display: inline-block;
+      margin: 10px 25px 10px 25px; }
+  .GenkiScheduler .main {
+    width: 980px;
+    margin-right: auto;
+    margin-left: auto; }

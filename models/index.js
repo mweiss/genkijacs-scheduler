@@ -9,6 +9,7 @@ var config    = require(__dirname + '/../config/config.json')[env];
 var sequelize = new Sequelize(config.database, config.username, config.password, config);
 var db        = {};
 
+<<<<<<< HEAD
 // check database connection
 sequelize.authenticate().complete(function(err) {
     if (err) {
@@ -18,6 +19,8 @@ sequelize.authenticate().complete(function(err) {
     }
 });
 
+=======
+>>>>>>> 8ee83c7aebec074b602816c57d61930d1f4ef2f0
 fs
   .readdirSync(__dirname)
   .filter(function(file) {
@@ -37,4 +40,8 @@ Object.keys(db).forEach(function(modelName) {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+<<<<<<< HEAD
 module.exports = db;
+=======
+module.exports = db;
+>>>>>>> 8ee83c7aebec074b602816c57d61930d1f4ef2f0

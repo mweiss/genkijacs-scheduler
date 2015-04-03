@@ -22,6 +22,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// TODO: change this to only use the javascript it outputs
+app.use(express.static(path.join(__dirname, 'ui')));
+
 app.use('/', routes);
 app.use('/users', users);
 
