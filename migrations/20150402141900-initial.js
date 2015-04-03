@@ -20,6 +20,7 @@ module.exports = {
       id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
       firstname: DataTypes.STRING,
       lastname: DataTypes.STRING,
+      email: DataTypes.STRING,
       password: DataTypes.STRING, //replace with encryption
       photo: DataTypes.STRING,
       type: DataTypes.ENUM('student', 'teacher', 'admin'),
