@@ -30,4 +30,27 @@ $ns: DataTable;
   input {
     width: 100%
   }
+
+  .TextFieldDateRangePicker {
+    input {
+      width: 65px;
+      margin-left: 5px;
+    }
+
+    .dateRangeContainer {
+      position: relative;
+
+    .DateRangePicker {
+      position: absolute;
+      background-color: white;
+      border: 1px solid black;
+      width: 650px;
+      padding-bottom: 20px;
+    }
+  }
+  }
+
+
+
+
 }

@@ -14,7 +14,9 @@ var TextFieldDateRangePicker = require('./TextFieldDateRangePicker.react');
 var EnrollmentDateList = React.createClass({
 
   getInitialState: function() {
-    return {};
+    return {
+      values: this.props.value
+    };
   },
 
   formattedDate: function(s) {
@@ -25,16 +27,34 @@ var EnrollmentDateList = React.createClass({
   },
 
   renderList: function() {
-    var elements = _.map(this.props.value, function(v) {
+    var elements = _.map(this.state.values, function(v) {
       return (<li>{[this.formattedDate(v.start), (<span> - </span>), this.formattedDate(v.end)]}</li>);
     }, this);
 
     return (<ul>{elements}</ul>);
   },
 
+
   renderEditList: function() {
-    var elements = _.map(this.props.value, function(v) {
-      return (<li><TextFieldDateRangePicker startDate={new Date(v.start)} endDate={v.end} /></li>);
+    var elements = _.map(this.state.values, function(v, i) {
+      var autoFocus = false;
+      if (this.props.autoFocus && this.state.values.length === 1) {
+        autoFocus = true;
+      }
+
+      var _onSelect = function(value) {
+        // TODO: Do I need to clone this?
+        var values = _.clone(this.state.values);
+        values[i] = {start: value.start.format(), end: value.end.format()};
+        this.setState({values: values});
+        if (this.props.onSave) {
+          this.props.onSave(values);
+        }
+      }
+
+      _onSelect = _.bind(_onSelect, this);
+
+      return (<li><TextFieldDateRangePicker onSelect={_onSelect} autoFocus={autoFocus} startDate={new Date(v.start)} endDate={new Date(v.end)} /></li>);
     }, this);
 
     return (<ul>{elements}</ul>);

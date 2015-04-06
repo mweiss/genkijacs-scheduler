@@ -33,12 +33,27 @@ function createStore() {
       this.removeListener(CHANGE_EVENT, callback);
     },
 
-    save: function(data) {
-      var old = _valueMap[data.ui_id];
+    edit: function(data) {
+      var row = _valueMap[data.ui_id];
+      if (row) {
+        var editData = row.editData || {};
+        editData = _.extend(editData, data);
+        row.editData = editData;
+        console.log('edit', row.editData);
+        this.emitChange();
+      }
+    },
+
+    save: function(row) {
+      var old = _valueMap[row.ui_id];
+      console.log('save', row, old, old.editData);
       if (old) {
-        _.extend(old, data);
+        _.extend(old, old.editData);
         if (old._new) {
           old._new = false;
+        }
+        if (old.editData) {
+          old.editData = null;
         }
         this.emitChange();
       }

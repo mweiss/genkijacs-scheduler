@@ -28,7 +28,7 @@ function getColumns() {
       header: "Enrollment date", // TODO: jp translation
       key: "enrollment_intervals",
       renderer: EnrollmentDateList,
-      width: 150,
+      width: 180,
       editable: true,
       sortable: true
     },

@@ -7,6 +7,13 @@ var WebAPIUtils = require('../http/WebAPIUtils');
 // TODO: Class, student and teacher actions are very very similar... we can probably combine them
 var ClassActions = {
 
+  edit: function(cl) {
+    AppDispatcher.dispatch({
+      actionType: SchedulerConstants.CLASS_EDIT,
+      row: cl
+    });
+  },
+
   save: function(cl) {
     WebAPIUtils.makeRequest({
       url: '/classes',

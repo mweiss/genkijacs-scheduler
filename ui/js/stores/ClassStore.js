@@ -27,6 +27,10 @@ AppDispatcher.register(function(action) {
       ClassStore.append();
       break;
 
+    case SchedulerConstants.CLASS_EDIT:
+      ClassStore.edit(action.row);
+      break;
+      
     default:
       // no op
   }

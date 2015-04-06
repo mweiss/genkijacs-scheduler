@@ -73,8 +73,6 @@ var DataTableRow = React.createClass({
 
   mixins: [IntlMixin],
 
-  _editValues: null,
-
   getInitialState: function() {
     var key = null;
 
@@ -94,17 +92,8 @@ var DataTableRow = React.createClass({
     };
   },
 
-  _resetEditValues: function() {
-    if (this.state.editColumnKey) {
-      this._initializeEditValues();
-    }
-    else {
-      this._editValues = {};
-    }
-  },
-
   componentDidMount: function() {
-    this._resetEditValues();
+    // TODO: fill this in
   },
 
   componentWillUnmount: function() {
@@ -125,7 +114,7 @@ var DataTableRow = React.createClass({
     }
   },
 
-  _initializeEditValues: function() {
+  _editableData: function() {
     var columnsToCopy = _.reduce(this.props.columns, function(arr, c) {
       if (c.editable) {
         arr.push(c.key);
@@ -133,20 +122,26 @@ var DataTableRow = React.createClass({
       return arr;
     }, ['id', 'ui_id']);
 
-    this._editValues = _.pick(this.props.data, columnsToCopy);
+    return _.extend({}, this.props.data, _.pick(this.props.data.editValues || {}, columnsToCopy));
   },
 
   _setEditing: function(key) {
     this.setState({editColumnKey: key});
-    this._initializeEditValues();
+    var rowData = _.pick(this.props.data, ['id', 'ui_id']);
+    if (this.props.actions.edit) {
+      this.props.actions.edit(rowData);
+    }
   },
 
   updateRow: function() {
     if (this.props.actions.save) {
-      this.props.actions.save(this._editValues);
-      this._resetEditValues();
-      this.setState({editColumnKey: null});
+      this.props.actions.save(this.props.data);
+      this.setState({editColumnKey: null}); // I may be able to get rid of this
     }
+  },
+
+  _isEditing: function() {
+    return this.props.data.editData && true;
   },
 
   fetchEditingFunction: function(column) {
@@ -160,27 +155,32 @@ var DataTableRow = React.createClass({
   },
 
   _createCell: function(column) {
-    var data      = this.props.data,
+    var data      = this._editableData(),
         v         = data[column.key],
         formatter = this._resolveFormatter(column.formatter),
         Renderer  = column.renderer,
         autoFocus = this.state.editColumnKey === column.key,
-        isEditing = this.state.editColumnKey,
+        isEditing = this._isEditing(), // TODO: maybe simplify this or abstract it out
         cellValue;
     
     var editingFunc = this.fetchEditingFunction(column);
 
-    var onSave = _.bind(function(value) {
-      this._editValues[column.key] = value;
+    var _onSave = _.bind(function(value) {
+      var rowData = _.pick(this.props.data, ['id', 'ui_id']);
+      rowData[column.key] = value;
+      if (this.props.actions.edit) {
+        this.props.actions.edit(rowData);
+      }
     }, this);
 
     var key = 'dtrc-' + data.ui_id + '-' + column.key;
 
     if (Renderer) {
-      cellValue = <Renderer editing={isEditing} formatter={formatter} key={key} autoFocus={autoFocus} data={data} value={v} onSave={onSave} />;
+      cellValue = <Renderer editing={isEditing} formatter={formatter} key={key}
+                            autoFocus={autoFocus} data={data} value={v} onSave={_onSave} />;
     }
-    else if (this.state.editColumnKey && column.editable) {
-      cellValue = (<TextInput key={key} autoFocus={autoFocus} value={v} onSave={onSave} />);
+    else if (this._isEditing() && column.editable) {
+      cellValue = (<TextInput key={key} autoFocus={autoFocus} value={v} onSave={_onSave} />);
     }
     else {
       cellValue = formatter(v);
@@ -194,7 +194,7 @@ var DataTableRow = React.createClass({
         cells = columns.map(this._createCell, this);
 
     var id = 'save';
-    if (this.state.editColumnKey) {
+    if (this._isEditing()) {
       cells.push((<td className="save" key={id}><div><button onClick={this.updateRow}>Save</button></div></td>));
     }
 

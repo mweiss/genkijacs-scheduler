@@ -25,7 +25,7 @@ gulp.task('javascript', function () {
     .pipe(sourcemaps.init({loadMaps: true}))
         .on('error', gutil.log)
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./dist/js/'));
+    .pipe(gulp.dest('./js/bundle.js'));
 });
 */
 

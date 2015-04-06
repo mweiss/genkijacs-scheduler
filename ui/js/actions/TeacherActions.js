@@ -6,6 +6,13 @@ var WebAPIUtils = require('../http/WebAPIUtils');
 
 var TeacherActions = {
 
+  edit: function(cl) {
+    AppDispatcher.dispatch({
+      actionType: SchedulerConstants.TEACHER_EDIT,
+      row: cl
+    });
+  },
+
   save: function(teacher) {
     WebAPIUtils.makeRequest({
       url: '/teachers',

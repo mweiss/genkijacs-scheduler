@@ -11,6 +11,7 @@ var TeacherTab = require('./TeacherTab.react');
 var StudentTab = require('./StudentTab.react');
 var ClassTab = require('./ClassTab.react');
 
+var AppActions = require('../actions/AppActions');
 
 var GenkiSchedulerApp = React.createClass({
   getInitialState: function() {
@@ -25,9 +26,13 @@ var GenkiSchedulerApp = React.createClass({
     // TODO: fill this in
   },
 
+  _onClick: function() {
+    AppActions.click();
+  },
+
   render: function() {
      return (
-      <div className="GenkiScheduler">
+      <div onClick={this._onClick}className="GenkiScheduler">
         <header>
           <ul>
             <li><Link to="schedule">Schedule</Link></li>

@@ -32,6 +32,10 @@ AppDispatcher.register(function(action) {
       TeacherStore.append();
       break;
 
+    case SchedulerConstants.TEACHER_EDIT:
+      TeacherStore.edit(action.row);
+      break;
+      
     default:
       // no op
   }
