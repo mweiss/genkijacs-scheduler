@@ -56,7 +56,7 @@ StudentStore.setAll([{
   "name_en": "Sascha Duschen",
   "enrollment_intervals": [{id: 2, start: "2015-01-10T00:00:00.000Z", end: "2015-06-12T00:00:00.000Z"}],
   "primary_language": "ドイツ語",
-  "home_country": "ドイツ",
+  "home_country": "スイス",
   "japanese_proficiency": "中級レベル",
   "notes": "お金持ち",
   "birthday": "1986-03-14T00:00:00.000Z"  

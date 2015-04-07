@@ -1,3 +1,5 @@
+Object.assign = require('object-assign');
+
 var React          = require('react');
 
 var Router = require('react-router'); // or var Router = ReactRouter; in browsers

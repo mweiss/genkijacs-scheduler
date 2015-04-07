@@ -32,6 +32,8 @@ $ns: DataTable;
   }
 
   .TextFieldDateRangePicker {
+    display: inline-block;
+    
     input {
       width: 65px;
       margin-left: 5px;

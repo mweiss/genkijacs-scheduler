@@ -11,16 +11,14 @@ var _ = require('underscore');
 var TextFieldDateRangePicker = React.createClass({
   getInitialState: function() {
     return {
-      dateRangePickerOpen: false,
-      startDate: this.props.startDate,
-      endDate: this.props.endDate
+      dateRangePickerOpen: false
     };
   },
 
   // TODO: This sort of bubble up is really frowned upon in React... I should do this in a smarter way by
   // having an action for this!
   handleSelect: function(dateRange) {
-    this.setState({dateRangePickerOpen: false, startDate: dateRange.start, endDate: dateRange.end});
+    this.setState({dateRangePickerOpen: false});
     if (this.props.onSelect) {
       this.props.onSelect(dateRange);
     }
@@ -36,6 +34,9 @@ var TextFieldDateRangePicker = React.createClass({
   },
 
   _formatDate: function(date) {
+    if (!date) {
+      return "";
+    }
     var options = {
       year: 'numeric', month: 'numeric', day: 'numeric'
     };
@@ -47,8 +48,8 @@ var TextFieldDateRangePicker = React.createClass({
   },
 
   render: function() {
-    var startDate = this.state.startDate;
-    var endDate = this.state.endDate;
+    var startDate = this.props.startDate;
+    var endDate = this.props.endDate;
     var autoFocus = this.props.autoFocus;
     var rangePickerHidden = !this.state.dateRangePickerOpen;
     var rangePickerStyle = {};
@@ -72,8 +73,8 @@ var TextFieldDateRangePicker = React.createClass({
     );
     return  (
             <div className="TextFieldDateRangePicker">
-              <input type="text" autoFocus={autoFocus} onFocus={this._onFocus} onBlur={this._onBlur} value={this._formatDate(startDate)} />
-              <input type="text" onFocus={this._onFocus} onBlur={this._onBlur} value={this._formatDate(endDate)} />
+              <input type="text" autoFocus={autoFocus} onFocus={this._onFocus} readOnly onBlur={this._onBlur} value={this._formatDate(startDate)} />
+              <input type="text" onFocus={this._onFocus} onBlur={this._onBlur} readOnly value={this._formatDate(endDate)} />
               {rangePicker}
             </div>
             );

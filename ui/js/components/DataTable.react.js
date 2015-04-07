@@ -122,7 +122,7 @@ var DataTableRow = React.createClass({
       return arr;
     }, ['id', 'ui_id']);
 
-    return _.extend({}, this.props.data, _.pick(this.props.data.editValues || {}, columnsToCopy));
+    return _.extend({}, this.props.data, _.pick(this.props.data.editData || {}, columnsToCopy));
   },
 
   _setEditing: function(key) {

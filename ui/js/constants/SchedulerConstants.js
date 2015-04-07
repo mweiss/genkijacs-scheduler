@@ -15,5 +15,9 @@ module.exports = keyMirror({
   CLASS_NEW: null,
   CLASS_EDIT: null,
 
+  CLASS_REGISTRATION_SAVE: null,
+  CLASS_REGISTRATION_NEW: null,
+  CLASS_REGISTRATION_EDIT: null,
+  
   APP_CLICK: null
 });

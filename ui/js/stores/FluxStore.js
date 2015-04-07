@@ -15,6 +15,7 @@ function incrementCounter() {
 function createStore() {
   var _values = [];
   var _valueMap = {};
+  var _idMap = {};
 
   var store = assign({}, EventEmitter.prototype, {
     all: function() {
@@ -39,15 +40,14 @@ function createStore() {
         var editData = row.editData || {};
         editData = _.extend(editData, data);
         row.editData = editData;
-        console.log('edit', row.editData);
         this.emitChange();
       }
     },
 
     save: function(row) {
       var old = _valueMap[row.ui_id];
-      console.log('save', row, old, old.editData);
       if (old) {
+        this.removeFromCache(old);
         _.extend(old, old.editData);
         if (old._new) {
           old._new = false;
@@ -55,8 +55,29 @@ function createStore() {
         if (old.editData) {
           old.editData = null;
         }
+        this._updateCaches(old);
         this.emitChange();
       }
+    },
+
+    removeFromCache: function() {
+      return; // noop
+    },
+
+    addToCache: function() {
+      return; // noop
+    },
+
+    _updateCaches: function(v) {
+      _valueMap[v.ui_id] = v;
+      if (v.id) {
+        _idMap[v.id] = v;
+      }
+      this.addToCache(v);
+    },
+
+    findById: function(id) {
+      return _idMap[id];
     },
 
     setAll: function(values) {
@@ -64,8 +85,8 @@ function createStore() {
       _valueMap = {};
       _.each(values, function(t) {
         t.ui_id = incrementCounter();
-        _valueMap[t.ui_id] = t;
-      });
+        this._updateCaches(t);
+      }, this);
       this.emitChange();
     },
 
@@ -79,8 +100,9 @@ function createStore() {
       var value = this.initEntity(ui_id);
       value.ui_id = ui_id;
       value._new = true;
+      value.editData = {ui_id: ui_id};
       _values.push(value);
-      _valueMap[ui_id] = value;
+      this._updateCaches(value);
 
       this.emitChange();
     }

@@ -3,8 +3,11 @@
 var React          = require("react");
 var DataTable      = require("./DataTable.react");
 var EnrollmentDateList  = require('./EnrollmentDateList.react');
+var ClassRegistrationList = require('./ClassRegistrationList.react');
 var StudentStore   = require("../stores/StudentStore");
+var ClassRegistrationStore = require("../stores/ClassRegistrationStore");
 var StudentActions = require("../actions/StudentActions");
+var _ = require('underscore');
 
 var ClassesList = {}; // TODO: implement
 
@@ -28,14 +31,15 @@ function getColumns() {
       header: "Enrollment date", // TODO: jp translation
       key: "enrollment_intervals",
       renderer: EnrollmentDateList,
-      width: 180,
+      width: 200,
       editable: true,
       sortable: true
     },
     {
       header: "授業",
-      key: "class",
-      width: 100,
+      key: "classes",
+      renderer: ClassRegistrationList,
+      width: 300,
       sortable: true,
       editable: true
     },
@@ -67,9 +71,6 @@ function getColumns() {
     }];
 }
 
-// TODO: this is very similar to the teacher and classes tab, so I might be able to
-// consolidate this logic
-
 // TODO: need to get rid of this and only include what's needed
 function getStudentTableState() {
   return {
@@ -96,7 +97,13 @@ var StudentTab = React.createClass({
   },
 
   render: function() {
-    return (<div><DataTable data={this.state.students} actions={StudentActions} columns={getColumns()}></DataTable>
+    var students = _.map(this.state.students, function(v) {
+      var cloned = _.clone(v);
+      cloned.classes = ClassRegistrationStore.findByStudentId(v.id) || [];
+      return cloned;
+    });
+
+    return (<div><DataTable data={students} actions={StudentActions} columns={getColumns()}></DataTable>
             <button onClick={StudentActions.new}>Add student</button></div>)
   }
 });
