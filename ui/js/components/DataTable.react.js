@@ -135,7 +135,7 @@ var DataTableRow = React.createClass({
 
   updateRow: function() {
     if (this.props.actions.save) {
-      this.props.actions.save(this.props.data);
+      this.props.actions.save(_.clone(this.props.data));
       this.setState({editColumnKey: null}); // I may be able to get rid of this
     }
   },
@@ -166,7 +166,7 @@ var DataTableRow = React.createClass({
     var editingFunc = this.fetchEditingFunction(column);
 
     var _onSave = _.bind(function(value) {
-      var rowData = _.pick(this.props.data, ['id', 'ui_id']);
+      var rowData = _.pick(this.props.data, ['id', 'ui_id', 'editData']);
       rowData[column.key] = value;
       if (this.props.actions.edit) {
         this.props.actions.edit(rowData);

@@ -48,6 +48,16 @@ var ClassRegistrationStore = assign(FluxStore.createStore(), {
     deleteFromCache(classIdCache, v.classId, v);
   },
 
+  saveAssociations: function(student) {
+    var classes = student.editData.classes;
+    if (classes) {
+      var oldAssocs = this.findByStudentId(student.id) || [];
+      _.each(oldAssocs, function(v) { this.del(v, true); }, this);
+      _.each(classes, function(v) { this.save(v, true); }, this);
+      this.emitChange();      
+    }
+  },
+
   addToCache: function(v) {
     insertIntoCache(studentIdCache, v.studentId, v);
     insertIntoCache(classIdCache, v.classId, v);
@@ -56,6 +66,10 @@ var ClassRegistrationStore = assign(FluxStore.createStore(), {
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
+    case SchedulerConstants.STUDENT_SAVE:
+      ClassRegistrationStore.saveAssociations(action.row);
+      break;
+
     case SchedulerConstants.CLASS_REGISTRATION_SAVE:
       ClassRegistrationStore.save(action.row);
       break;

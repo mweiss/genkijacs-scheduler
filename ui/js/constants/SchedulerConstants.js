@@ -18,6 +18,10 @@ module.exports = keyMirror({
   CLASS_REGISTRATION_SAVE: null,
   CLASS_REGISTRATION_NEW: null,
   CLASS_REGISTRATION_EDIT: null,
-  
+
+  ROOM_SAVE: null,
+  ROOM_NEW: null,
+  ROOM_EDIT: null,
+
   APP_CLICK: null
 });

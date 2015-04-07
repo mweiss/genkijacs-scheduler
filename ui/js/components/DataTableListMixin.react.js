@@ -8,7 +8,8 @@ var ReactIntl = require('react-intl');
 var FormattedDate = ReactIntl.FormattedDate;
 var _ = require('underscore');
 
-// Required methods to implement:  renderReadListItem(v), renderEditListItem(obj), emptyItem, showDeleteButton
+// Required methods to implement:  renderReadListItem(v), renderEditListItem(obj), emptyItem, showDeleteButton,
+// editValue(oldValue, input)
 var DataTableListMixin = {
 
   getInitialState: function() {
@@ -16,8 +17,9 @@ var DataTableListMixin = {
   },
 
   renderList: function() {
-    var elements = _.map(this.props.value, function(v) {
-      return (<li>{this.renderReadListItem(v)}</li>);
+    var elements = _.map(this.props.value, function(v, i) {
+      var id = "rl" + i;
+      return (<li key={id} >{this.renderReadListItem(v)}</li>);
     }, this);
 
     return (<ul>{elements}</ul>);
@@ -33,7 +35,7 @@ var DataTableListMixin = {
 
       var _onSelect = function(value) {
         var values = _.clone(this.props.value);
-        values[i] = {start: value.start.format(), end: value.end.format()};
+        values[i] = this.editValue(values[i], value);
         if (this.props.onSave) {
           this.props.onSave(values);
         }
@@ -49,9 +51,10 @@ var DataTableListMixin = {
 
       _onSelect = _.bind(_onSelect, this);
       _onDelete = _.bind(_onDelete, this);
-      var renderedItem = this.renderEditListItem({value: v, onSelect: _onSelect, onDelete: _onDelete, autoFocus: autoFocus});
+      var key = 'li' + i;
+      var renderedItem = this.renderEditListItem({value: v, onSelect: _onSelect, onDelete: _onDelete, autoFocus: autoFocus, i: i});
       var deleteButton = this.showDeleteButton(v) ? (<button onClick={_onDelete}>X</button>) : null;
-      return (<li>{[renderedItem, deleteButton]}</li>);
+      return (<li key={key}>{[renderedItem, deleteButton]}</li>);
     }, this);
 
     return (<ul>{elements}</ul>);
@@ -71,10 +74,15 @@ var DataTableListMixin = {
 
 
   formattedDate: function(s) {
-    var d = new Date(s);
-    return (<FormattedDate value= {d} day="numeric"
+    if (s) {
+      var d = new Date(s);
+      return (<FormattedDate value= {d} day="numeric"
               month="numeric"
               year="numeric" />);
+    }
+    else {
+      return "";
+    }
   },
 
   parseDate: function(d) {
