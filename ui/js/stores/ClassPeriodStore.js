@@ -6,7 +6,7 @@ var AppDispatcher = require("../dispatcher/AppDispatcher");
 var SchedulerConstants = require("../constants/SchedulerConstants");
 var FluxStore = require("./FluxStore");
 
-var RoomStore = assign(FluxStore.createStore(), {
+var ClassPeriodStore = assign(FluxStore.createStore(), {
   initEntity: function() {
     return {
       "name_jp": "",
@@ -19,16 +19,16 @@ var RoomStore = assign(FluxStore.createStore(), {
 // TODO: This seems similar to teacher and student, perhaps we can combine the abstraction?
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case SchedulerConstants.ROOM_SAVE:
-      RoomStore.save(action.row);
+    case SchedulerConstants.CLASS_PERIOD_SAVE:
+      ClassPeriodStore.save(action.row);
       break;
 
-    case SchedulerConstants.ROOM_NEW:
-      RoomStore.append();
+    case SchedulerConstants.CLASS_PERIOD_NEW:
+      ClassPeriodStore.append();
       break;
 
-    case SchedulerConstants.ROOM_EDIT:
-      RoomStore.edit(action.row);
+    case SchedulerConstants.CLASS_PERIOD_EDIT:
+      ClassPeriodStore.edit(action.row);
       break;
       
     default:
@@ -36,7 +36,7 @@ AppDispatcher.register(function(action) {
   }
 });
 
-RoomStore.setAll([{
+ClassPeriodStore.setAll([{
 }]);
 
-module.exports = RoomStore;
+module.exports = ClassPeriodStore;

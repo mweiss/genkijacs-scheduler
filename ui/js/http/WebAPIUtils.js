@@ -11,7 +11,7 @@ var BASE_URL = 'http://localhost:3000';
 function makeRequest(config) {
   var url = config.url;
   config.url = BASE_URL + (url.charAt(0) === '/' ? '' : '/') + url;
-  reqwest(config);
+  // reqwest(config); // TODO: comment this back out when we hook the server up
 }
 
 module.exports = {
