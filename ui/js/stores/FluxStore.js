@@ -8,6 +8,9 @@ var CHANGE_EVENT = "change";
 
 var _id_counter = 0;
 
+// TODO: Actually make rules for how the store should treat it's arguments!!!!  Right now it's very
+// inconsistent!
+
 function incrementCounter() {
   return _id_counter++;
 }
@@ -44,18 +47,45 @@ function createStore() {
       }
     },
 
-    save: function(row) {
-      var old = _valueMap[row.ui_id];
-      if (old) {
-        this.removeFromCache(old);
-        _.extend(old, old.editData);
-        if (old._new) {
-          old._new = false;
+    del: function(data, silenceChange) {
+      var old = _valueMap[data.ui_id];
+      this.removeFromCache(old);
+
+      // TODO: This is super inefficient!  Do I need to keep this around?
+      _.values = _.filter(_values, function(v) {
+        return v.ui_id !== data.ui_id;
+      });
+
+      delete _valueMap[data.ui_id];
+
+      if (!silenceChange) {
+        this.emitChange();
+      }
+    },
+
+    save: function(row, silenceChange) {
+      var v = _valueMap[row.ui_id];
+      if (v) {
+        this.removeFromCache(v);
+        _.extend(v, v.editData);
+
+      }
+      else {
+        v = row;
+        if (!v.ui_id) {
+          v.ui_id = incrementCounter();
         }
-        if (old.editData) {
-          old.editData = null;
-        }
-        this._updateCaches(old);
+        _values.push(v);
+      }
+
+      if (v._new) {
+        v._new = false;
+      }
+      if (v.editData) {
+        v.editData = null;
+      }
+      this._updateCaches(v);
+      if (!silenceChange) {
         this.emitChange();
       }
     },

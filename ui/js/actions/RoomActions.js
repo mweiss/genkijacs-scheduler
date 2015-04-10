@@ -4,21 +4,22 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SchedulerConstants = require('../constants/SchedulerConstants');
 var WebAPIUtils = require('../http/WebAPIUtils');
 
-var StudentActions = {
+// TODO: Room, student and teacher actions are very very similar... we can probably combine them
+var RoomActions = {
 
   edit: function(cl) {
     AppDispatcher.dispatch({
-      actionType: SchedulerConstants.STUDENT_EDIT,
+      actionType: SchedulerConstants.ROOM_EDIT,
       row: cl
     });
   },
 
-  save: function(student) {
+  save: function(cl) {
     /*
     WebAPIUtils.makeRequest({
-      url: '/students',
+      url: '/rooms',
       method: 'post',
-      data: student,
+      data: cl,
       success: function(resp) {
         console.log('SA.update.success', resp);
       }
@@ -26,17 +27,17 @@ var StudentActions = {
     */
 
     AppDispatcher.dispatch({
-      actionType: SchedulerConstants.STUDENT_SAVE,
-      row: student
+      actionType: SchedulerConstants.ROOM_SAVE,
+      row: cl
     });
   },
 
   new: function() {
     AppDispatcher.dispatch({
-      actionType: SchedulerConstants.STUDENT_NEW
+      actionType: SchedulerConstants.ROOM_NEW
     });
   }
 
 };
 
-module.exports = StudentActions;
+module.exports = RoomActions;

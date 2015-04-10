@@ -31,6 +31,10 @@ var EnrollmentDateList = React.createClass({
 
   showDeleteButton: function(v) {
     return v.start && true;
+  },
+
+  editValue: function(oldValue, value) {
+    return {start: value.start.format(), end: value.end.format()};
   }
 
 });
