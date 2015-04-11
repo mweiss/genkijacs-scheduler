@@ -11,7 +11,7 @@ var RoomStore = assign(FluxStore.createStore(), {
     return {
       "name_jp": "",
       "name_en": "",
-      "type": "normal" // todo: enumerate the class types
+      "capacity": 7 // todo: enumerate the class types
     };
   }
 });
@@ -37,6 +37,23 @@ AppDispatcher.register(function(action) {
 });
 
 RoomStore.setAll([{
-}]);
+  id: 1,
+  "name_jp": "１番",
+  "name_en": "Room 1",
+  "capacity": 7
+},
+{
+  id: 2,
+  "name_jp": "２番",
+  "name_en": "Room 2",
+  "capacity": 7
+},
+{
+  id: 3,
+  "name_jp": "３番",
+  "name_en": "Room 3",
+  "capacity": 7
+}
+]);
 
 module.exports = RoomStore;

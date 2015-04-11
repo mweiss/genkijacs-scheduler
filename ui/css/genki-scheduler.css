@@ -11,3 +11,10 @@
     width: 1200px;
     margin-right: auto;
     margin-left: auto; }
+  .GenkiScheduler .RoomRow {
+    width: 100%; }
+  .GenkiScheduler .ClassPeriodCell {
+    display: inline-block;
+    width: 120px; }
+  .GenkiScheduler .RoomCell {
+    display: inline-block; }

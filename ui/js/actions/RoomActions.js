@@ -7,14 +7,14 @@ var WebAPIUtils = require('../http/WebAPIUtils');
 // TODO: Room, student and teacher actions are very very similar... we can probably combine them
 var RoomActions = {
 
-  edit: function(cl) {
+  edit: function(room) {
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.ROOM_EDIT,
-      row: cl
+      row: room
     });
   },
 
-  save: function(cl) {
+  save: function(room) {
     /*
     WebAPIUtils.makeRequest({
       url: '/rooms',
@@ -28,7 +28,7 @@ var RoomActions = {
 
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.ROOM_SAVE,
-      row: cl
+      row: room
     });
   },
 

@@ -43,11 +43,6 @@ var ClassRegistrationStore = assign(FluxStore.createStore(), {
     return studentIdCache[studentId];
   },
 
-  removeFromCache: function(v) {
-    deleteFromCache(studentIdCache, v.studentId, v);
-    deleteFromCache(classIdCache, v.classId, v);
-  },
-
   saveAssociations: function(student) {
     var classes = student.editData.classes;
     if (classes) {
@@ -56,6 +51,11 @@ var ClassRegistrationStore = assign(FluxStore.createStore(), {
       _.each(classes, function(v) { this.save(v, true); }, this);
       this.emitChange();      
     }
+  },
+
+  removeFromCache: function(v) {
+    deleteFromCache(studentIdCache, v.studentId, v);
+    deleteFromCache(classIdCache, v.classId, v);
   },
 
   addToCache: function(v) {

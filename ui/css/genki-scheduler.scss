@@ -21,4 +21,17 @@ $ns: GenkiScheduler;
     margin-right: auto;
     margin-left: auto;
   }
+
+  .RoomRow {
+    width: 100%;
+  }
+
+  .ClassPeriodCell {
+    display: inline-block;
+    width: 120px;
+  }
+
+  .RoomCell {
+    display: inline-block;
+  }
 }
