@@ -1,20 +1,103 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
 .GenkiScheduler {
-  padding: 10px; }
+  font-family: 'Open Sans', sans-serif; }
   .GenkiScheduler header {
+    background-color: #E94E77;
     margin-bottom: 50px; }
+    .GenkiScheduler header .TabHeaderBar {
+      width: 1200px;
+      margin-right: auto;
+      margin-left: auto; }
     .GenkiScheduler header ul {
       list-style-type: none; }
     .GenkiScheduler header li {
       display: inline-block;
       margin: 10px 25px 10px 25px; }
+      .GenkiScheduler header li a {
+        color: #F4EAD5;
+        font-size: 20px;
+        text-decoration: none; }
+      .GenkiScheduler header li a.active {
+        border-bottom: 2px solid #F4EAD5; }
   .GenkiScheduler .main {
     width: 1200px;
     margin-right: auto;
     margin-left: auto; }
+    .GenkiScheduler .main .btn {
+      outline: none;
+      border: none;
+      color: #ffffff;
+      font-size: 20px;
+      background: #C6A49A;
+      padding: 5px 10px 5px 10px;
+      text-decoration: none;
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 300; }
+    .GenkiScheduler .main .btn:hover {
+      background: #937167;
+      text-decoration: none; }
+  .GenkiScheduler .DateHeader {
+    position: relative;
+    height: 50px; }
+    .GenkiScheduler .DateHeader h2 {
+      float: left;
+      top: 20px;
+      font-size: 20px;
+      padding-top: 5px; }
+    .GenkiScheduler .DateHeader div.dateBtnGroup {
+      float: left;
+      margin-left: 20px; }
+      .GenkiScheduler .DateHeader div.dateBtnGroup button {
+        margin-right: 2px; }
+    .GenkiScheduler .DateHeader div.actionBtnGroup {
+      float: right; }
+      .GenkiScheduler .DateHeader div.actionBtnGroup button {
+        margin-right: 2px; }
+  .GenkiScheduler .DaySchedule .DayScheduleHeader {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 18px; }
   .GenkiScheduler .RoomRow {
-    width: 100%; }
-  .GenkiScheduler .ClassPeriodCell {
-    display: inline-block;
-    width: 120px; }
-  .GenkiScheduler .RoomCell {
-    display: inline-block; }
+    width: 100%;
+    position: relative;
+    height: 62px; }
+    .GenkiScheduler .RoomRow .ClassPeriodCell > input {
+      width: 120px;
+      height: 30px;
+      border-style: solid;
+      border-color: #efefef;
+      border-width: 0px;
+      text-indent: 10px;
+      color: #aaaaaa; }
+    .GenkiScheduler .RoomRow .ClassPeriodCell {
+      display: block;
+      width: 120px;
+      float: left; }
+      .GenkiScheduler .RoomRow .ClassPeriodCell input.ClassList {
+        border-width: 1px 0px 0px 1px;
+        border-top-color: #dedede; }
+      .GenkiScheduler .RoomRow .ClassPeriodCell input.StudentList {
+        border-width: 1px 0px 0px 1px; }
+      .GenkiScheduler .RoomRow .ClassPeriodCell .Select .Select-arrow {
+        display: none; }
+      .GenkiScheduler .RoomRow .ClassPeriodCell .Select .Select-placeholder, .GenkiScheduler .RoomRow .ClassPeriodCell .Select .Select-control {
+        padding-top: 4px;
+        border-radius: 0px;
+        padding-bottom: 3px; }
+    .GenkiScheduler .RoomRow .RoomCell {
+      width: 40px;
+      height: 40px;
+      border-width: 1px 0px 1px 1px;
+      border-style: solid;
+      border-color: #efefef;
+      background-color: #efefef;
+      display: block;
+      float: left;
+      margin-top: 10px; }
+      .GenkiScheduler .RoomRow .RoomCell .RoomCellOuter {
+        position: relative; }
+        .GenkiScheduler .RoomRow .RoomCell .RoomCellOuter .RoomCellInner {
+          position: absolute;
+          top: 10px;
+          left: 3px; }

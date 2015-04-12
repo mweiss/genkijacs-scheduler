@@ -53,6 +53,42 @@ RoomStore.setAll([{
   "name_jp": "３番",
   "name_en": "Room 3",
   "capacity": 7
+},
+{
+  id: 4,
+  "name_jp": "４番",
+  "name_en": "Room 4",
+  "capacity": 7
+},
+{
+  id: 5,
+  "name_jp": "５番",
+  "name_en": "Room 5",
+  "capacity": 7
+},
+{
+  id: 6,
+  "name_jp": "６番",
+  "name_en": "Room 6",
+  "capacity": 7
+},
+{
+  id: 7,
+  "name_jp": "７番",
+  "name_en": "Room 7",
+  "capacity": 7
+},
+{
+  id: 8,
+  "name_jp": "８番",
+  "name_en": "Room 8",
+  "capacity": 7
+},
+{
+  id: 9,
+  "name_jp": "９番",
+  "name_en": "Room 9",
+  "capacity": 7
 }
 ]);
 

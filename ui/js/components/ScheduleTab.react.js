@@ -10,10 +10,10 @@ var FormattedDate    = ReactIntl.FormattedDate;
 var _                = require("underscore");
 var ClassPeriodStore = require("../stores/ClassPeriodStore");
 var RoomStore        = require("../stores/RoomStore");
-var ClassStore        = require("../stores/ClassStore");
-var TeacherStore        = require("../stores/TeacherStore");
+var ClassStore       = require("../stores/ClassStore");
+var TeacherStore     = require("../stores/TeacherStore");
 var TextInput        = require('./TextInput.react');
-var ReactSelect = require('react-select');
+var ReactSelect      = require('react-select');
 
 var DateHeader = React.createClass({
   getInitialState: function() {
@@ -25,10 +25,16 @@ var DateHeader = React.createClass({
     var endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 5);
 
     return (
-      <div>
+      <div className="DateHeader">
          <h2><FormattedDate value={startDate} /> - <FormattedDate value={endDate} /></h2>
-         <button onClick={this.props.onPrevious} >previous</button>
-         <button onClick={this.props.onNext}>next</button>
+         <div className="dateBtnGroup">
+           <button className="btn" onClick={this.props.onPrevious} >&larr;</button>
+           <button className="btn" onClick={this.props.onNext}>&rarr;</button>
+         </div>
+         <div className="actionBtnGroup">
+           <button className="btn">Copy last week</button>
+           <button className="btn">Print schedules</button>
+         </div>
       </div>
     );
   }
@@ -36,7 +42,10 @@ var DateHeader = React.createClass({
 
 var ClassPeriodCell = React.createClass({
   getInitialState: function() {
-    return {};
+    return {
+      classFocused: false,
+      studentFocused: false
+    };
   },
 
   _findClassList: function() {
@@ -65,29 +74,67 @@ var ClassPeriodCell = React.createClass({
     // TODO: update teacher select
   },
 
+  _onFocus: function(lbl) {
+    return _.bind(function(e) {
+      var state = _.clone(this.state);
+      state[lbl] = true;
+      this.setState(state);
+    }, this);
+  },
+
+  _onBlur: function(lbl) {
+    return _.bind(function(e) {
+      var state = _.clone(this.state);
+      state[lbl] = false;
+      this.setState(state);
+    }, this);
+  },
+
   render: function() {
     var classPeriod = this.props.classPeriod;
-    var cid = classPeriod.classId || "";
-    var tid = classPeriod.teacherId || "";
+    var cid = classPeriod.classId || null;
+    var tid = classPeriod.teacherId || null;
+    var classPlaceholder = "何もない";
+    var studentPlaceholder = "誰もない";
 
-    return (
-      <div className="ClassPeriodCell">
-        <ReactSelect
-          placeholder="授業"
+    var classInput;
+    var studentInput;
+    if (this.state.classFocused) {
+      classInput = (<ReactSelect
+          placeholder={classPlaceholder}
           className="ClassList"
           clearable={false}
           value={cid}
           options={this._findClassList()}
           onChange={this.onClassSelect}
-        />
-        <ReactSelect
-          placeholder="先生"
+          autoFocus={true}
+          onBlur={this._onBlur("classFocused")}
+        />)
+    }
+    else {
+      classInput = (<input className="ClassList" onFocus={this._onFocus("classFocused")} readOnly={true} value={classPlaceholder} />)
+    }
+
+
+    if (this.state.studentFocused) {
+      studentInput = (<ReactSelect
+          placeholder={studentInput}
           className="StudentList"
           clearable={false}
           value={tid}
+          autoFocus={true}
+          onBlur={this._onBlur("studentFocused")}
           options={this._findTeacherList()}
           onChange={this.onTeacherSelect}
-        />
+        />);
+    }
+    else {
+      studentInput = (<input className="StudentList" onFocus={this._onFocus("studentFocused")} readOnly={true} value="誰もない" />)
+    }
+
+    return (
+      <div className="ClassPeriodCell">
+        {classInput}{studentInput}
       </div>
     );
   }
@@ -101,7 +148,7 @@ var RoomCell = React.createClass({
   onEdit: function(columnName) {
     return _.bind(function(e) {
       var obj = {};
-      obj[columnName] = e.target.value;
+      obj[columnName] = e;
       obj.ui_id = this.props.room.ui_id;
       RoomStore.edit(obj);
     }, this);
@@ -133,7 +180,7 @@ var RoomCell = React.createClass({
         );
     }
     else {
-      roomCellContents = (<span>{room.name_jp}</span>);
+      roomCellContents = (<div className="RoomCellOuter"><span className="RoomCellInner">{room.name_jp}</span></div>);
       clickHandler = this.onStartEdit;
     }
 
@@ -174,8 +221,6 @@ var RoomRow = React.createClass({
       classPeriod = classPeriod || {startDate: intervalStart, endDate: intervalEnd, room: room.id};
       return (<ClassPeriodCell interval={interval} totalInterval={totalInterval} classPeriod={classPeriod} />);
     }, this);
-
-    console.log(intervalCells);
 
     // Render a room row
     return (<div className="RoomRow">{roomCell}{intervalCells}</div>);
@@ -224,7 +269,7 @@ var DaySchedule = React.createClass({
 
     return (
       <div className="DaySchedule">
-        <span><FormattedDate value={date}/></span>
+        <h3 className="DayScheduleHeader"><FormattedDate value={date}/></h3>
         {roomRows}
       </div>
     );
@@ -237,9 +282,9 @@ var DaySchedule = React.createClass({
     var header = this.renderHeader();
     var body   = this.renderBody();
 
+    // TODO: add add/remove room logic
     return (
       <div>
-        <button>Add room</button>
         {header}
         {body}
       </div>);
@@ -308,8 +353,6 @@ var ScheduleTab = React.createClass({
     return (
       <div>
          <DateHeader onPrevious={this.onPrevious} onNext={this.onNext} startDate={startDate}/>
-         <button>Copy last week</button>
-         <button>Print schedules</button>
          {daySchedules}
       </div>
     );

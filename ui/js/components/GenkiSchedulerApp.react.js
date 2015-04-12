@@ -37,12 +37,14 @@ var GenkiSchedulerApp = React.createClass({
      return (
       <div onClick={this._onClick}className="GenkiScheduler">
         <header>
-          <ul>
-            <li><Link to="schedule">Schedule</Link></li>
-            <li><Link to="classes">Classes</Link></li>
-            <li><Link to="teachers">Teachers</Link></li>
-            <li><Link to="students">Students</Link></li>
-          </ul>
+          <div className="TabHeaderBar">
+            <ul>
+              <li><Link to="schedule">Schedule</Link></li>
+              <li><Link to="classes">Classes</Link></li>
+              <li><Link to="teachers">Teachers</Link></li>
+              <li><Link to="students">Students</Link></li>
+            </ul>
+          </div>
         </header>
 
         {/* this is the important part */}
