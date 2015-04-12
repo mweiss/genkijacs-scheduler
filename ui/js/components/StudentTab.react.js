@@ -27,6 +27,7 @@ function getColumns() {
       editable: true,
       sortable: true
     },
+    /*
     {
       header: "Enrollment date", // TODO: jp translation
       key: "enrollment_intervals",
@@ -35,6 +36,7 @@ function getColumns() {
       editable: true,
       sortable: true
     },
+    */
     {
       header: "授業",
       key: "classes",
@@ -42,6 +44,20 @@ function getColumns() {
       width: 300,
       sortable: true,
       editable: true
+    },
+    {
+      header: "年齢",
+      key: "birthday_two",
+      width: 50,
+      editable: false,
+      sortable: true
+    },
+    {
+      header: "生年月日",
+      key: "birthday",
+      width: 75,
+      editable: false,
+      sortable: true
     },
     {
       header: "母国語",
@@ -63,12 +79,14 @@ function getColumns() {
       width: 90,
       sortable: true,
       editable: true
-    },
+    }
+    /*
     {
       header: "他の情報", // Get the right japanese translation
       key: "notes",
       editable: true
-    }];
+    }
+    */];
 }
 
 // TODO: need to get rid of this and only include what's needed

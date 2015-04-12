@@ -118,7 +118,7 @@ var ClassPeriodCell = React.createClass({
 
     if (this.state.studentFocused) {
       studentInput = (<ReactSelect
-          placeholder={studentInput}
+          placeholder={studentPlaceholder}
           className="StudentList"
           clearable={false}
           value={tid}
@@ -131,9 +131,16 @@ var ClassPeriodCell = React.createClass({
     else {
       studentInput = (<input className="StudentList" onFocus={this._onFocus("studentFocused")} readOnly={true} value="誰もない" />)
     }
+    var classNames = ["ClassPeriodCell"];
+    if (this.props.lastCell) {
+      classNames.push("ClassPeriodLastCell");
+    }
+    if (this.props.firstCell) {
+      classNames.push("ClassPeriodFirstCell");
+    }
 
     return (
-      <div className="ClassPeriodCell">
+      <div className={classNames.join(" ")}>
         {classInput}{studentInput}
       </div>
     );
@@ -206,7 +213,7 @@ var RoomRow = React.createClass({
 
     var roomCell = (<RoomCell room={room} />);
 
-    var intervalCells = _.map(intervals, function(interval) {
+    var intervalCells = _.map(intervals, function(interval, i) {
 
       var classPeriod = _.find(classPeriods, function(v) {
         var startDate = new Date(v.startDate);
@@ -219,11 +226,20 @@ var RoomRow = React.createClass({
       var intervalEnd = this.createTime(date, interval.hour + interval.length, interval.minute + interval.length);
 
       classPeriod = classPeriod || {startDate: intervalStart, endDate: intervalEnd, room: room.id};
-      return (<ClassPeriodCell interval={interval} totalInterval={totalInterval} classPeriod={classPeriod} />);
+
+      return (<ClassPeriodCell interval={interval}
+                 totalInterval={totalInterval}
+                 lastCell={(i + 1) === intervals.length}
+                 firstCell={i === 0}
+                 classPeriod={classPeriod} />);
     }, this);
 
+    var classNames = ["RoomRow"];
+    if (this.props.lastRow) {
+      classNames.push("RoomRowLast");
+    }
     // Render a room row
-    return (<div className="RoomRow">{roomCell}{intervalCells}</div>);
+    return (<div className={classNames.join(" ")}>{roomCell}{intervalCells}</div>);
   }
 });
 
@@ -260,9 +276,10 @@ var DaySchedule = React.createClass({
     var intervals = this.props.intervals;
     var totalInterval = this.props.totalInterval;
 
-    var roomRows = _.map(rooms, function(room) {
+    var roomRows = _.map(rooms, function(room, i) {
       var classPeriods = data[room.id];
-      return (<RoomRow date={date} intervals={intervals} totalInterval={this.props.totalInterval} classPeriods={classPeriods} room={room}/>);
+      // TODO: remove for correct logic last row logic
+      return (<RoomRow lastRow={(i + 1) === rooms.length} date={date} intervals={intervals} totalInterval={this.props.totalInterval} classPeriods={classPeriods} room={room}/>);
     }, this);
 
     // TODO: Add out rooms as needed

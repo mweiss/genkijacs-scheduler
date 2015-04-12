@@ -4,6 +4,9 @@ $brownPink: #D68189;
 $brown: #C6A49A;
 $cyan: #C6E5D9;
 $tan: #F4EAD5;
+
+$darkerBrown: #937167;
+
 $lightGrey: #efefef;
 $darkerGrey: #dedede;
 $lightGreyTextColor: #aaaaaa;
@@ -29,6 +32,7 @@ $lightGreyTextColor: #aaaaaa;
 
     li {
       a {
+        border: 0px;
         color: $tan;
         font-size: 20px;
         text-decoration: none;
@@ -55,7 +59,7 @@ $lightGreyTextColor: #aaaaaa;
       border: none;
       color: #ffffff;
       font-size: 20px;
-      background: #C6A49A;
+      background: $brown;
       padding: 5px 10px 5px 10px;
       text-decoration: none;
       font-family: 'Open Sans';
@@ -64,7 +68,7 @@ $lightGreyTextColor: #aaaaaa;
     }
 
     .btn:hover {
-      background: #937167;
+      background: $darkerBrown;
       text-decoration: none;
     }
   }
@@ -86,8 +90,8 @@ $lightGreyTextColor: #aaaaaa;
         margin-right: 2px;
       }
 
-      float: left;
-      margin-left: 20px;
+      left: 240px;
+      position: absolute;
     }
 
     div.actionBtnGroup {
@@ -105,9 +109,12 @@ $lightGreyTextColor: #aaaaaa;
       margin-top: 20px;
       margin-bottom: 20px;
       font-size: 18px;
+      background-color: $brownPink;
+      color: white;
+      width: 984px;
+      padding: 10px;
     }
   }
-
 
   .RoomRow {
     width: 100%;
@@ -124,21 +131,26 @@ $lightGreyTextColor: #aaaaaa;
       color: $lightGreyTextColor;
     }
 
+
     .ClassPeriodCell {
-
-
       input.ClassList {
-        border-width: 1px 0px 0px 1px;
+        border-width: 1px 1px 0px 1px;
         border-top-color: $darkerGrey;
       }
 
       input.StudentList {
         border-width: 1px 0px 0px 1px;
       }
+
       .Select {
         .Select-arrow {
           display: none;
         }
+
+        .Select-control {
+          border-width: 1px 1px 0px 1px;
+        }
+
         .Select-placeholder, .Select-control {
           padding-top: 4px;
           border-radius: 0px;
@@ -146,10 +158,22 @@ $lightGreyTextColor: #aaaaaa;
         }
       }
 
-
       display: block;
       width: 120px;
       float: left;
+    }
+
+    .ClassPeriodLastCell {
+      input.ClassList, input.StudentList {
+        border-width: 1px 1px 0px 1px;
+        border-right-color: $darkerGrey;
+      }
+    }
+
+    .ClassPeriodFirstCell {
+      input.ClassList, input.StudentList {
+        border-left-color: $darkerGrey;
+      }
     }
 
     .RoomCell {
@@ -165,15 +189,36 @@ $lightGreyTextColor: #aaaaaa;
       }
       border-width: 1px 0px 1px 1px;
       border-style: solid;
-      border-color: $lightGrey;
+      border-color: $darkerGrey;
       background-color: $lightGrey;
       display: block;
       float: left;
       margin-top: 10px
     }
 
-
   }
 
+  .RoomRowLast {
+
+    .ClassPeriodFirstCell {
+      input.ClassList, input.StudentList {
+        border-left-color: $darkerGrey;
+      }
+    }
+
+    .ClassPeriodLastCell {
+      input.ClassList, input.StudentList {
+        border-width: 1px 1px 0px 1px;
+        border-right-color: $darkerGrey;
+      }
+    }
+
+    .ClassPeriodCell {
+      input.StudentList {
+        border-width: 1px 1px 1px 1px;
+        border-bottom-color: $darkerGrey;
+      }
+    }
+  }
 
 }
