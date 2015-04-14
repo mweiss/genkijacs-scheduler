@@ -19,7 +19,7 @@ router.get('/login', passport.authenticate('local'), function(req, res) {
 
 /* logout */
 router.get("/logout", function (req, res) {
-  console.log("logout");
+  console.log("logout", req.user, req.isAuthenticated());
   req.logOut();
   res.sendStatus(200);
 });

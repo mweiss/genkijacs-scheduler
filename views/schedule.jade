@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  - var arr = ['michael', 'sascha'];
+  
+  each item in arr
+    h1= title
+    div(id='info') infobox
+      p= item
+    
+    img(src='http://www.genkijacs.com/images/logo.png')
+    div(id='day1') day1
+    div(id='day2') day2
+    div(id='day3') day3
+    div(id='day4') day4
+    div(id='day5') day5
+  
