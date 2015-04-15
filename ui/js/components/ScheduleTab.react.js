@@ -15,6 +15,12 @@ var TeacherStore     = require("../stores/TeacherStore");
 var TextInput        = require('./TextInput.react');
 var ReactSelect      = require('react-select');
 
+
+
+function createTime(date, hour, minute) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute).toJSON();
+}
+
 var DateHeader = React.createClass({
   getInitialState: function() {
     return {};
@@ -44,7 +50,7 @@ var ClassPeriodCell = React.createClass({
   getInitialState: function() {
     return {
       classFocused: false,
-      studentFocused: false
+      teacherFocused: false
     };
   },
 
@@ -66,12 +72,18 @@ var ClassPeriodCell = React.createClass({
     });
   },
 
-  onClassSelect: function() {
-    // TODO: update the class period
+  onClassSelect: function(v) {
+    var cp = _.clone(this._findClassPeriod());
+    cp.classId = v;
+    ClassPeriodStore.edit(cp);
+    ClassPeriodStore.save(cp);
   },
 
-  onTeacherSelect: function() {
-    // TODO: update teacher select
+  onTeacherSelect: function(v) {
+    var cp = _.clone(this._findClassPeriod());
+    cp.teacherId = v;
+    ClassPeriodStore.edit(cp);
+    ClassPeriodStore.save(cp);
   },
 
   _onFocus: function(lbl) {
@@ -90,19 +102,53 @@ var ClassPeriodCell = React.createClass({
     }, this);
   },
 
+  _findClassPeriod: function() {
+    var interval = this.props.interval;
+    var date = this.props.date;
+    var roomId = this.props.roomId;
+
+    var days = ClassPeriodStore.findByDay(date) || {};
+    var classPeriods = days[roomId] || [];
+
+    var classPeriod = _.find(classPeriods, function(v) {
+      var startDate = new Date(v.startDate);
+      var hour = startDate.getHours();
+      var minutes = startDate.getMinutes();
+      return hour === interval.hour && minutes === interval.minute;
+    }, this);
+
+    var intervalStart = createTime(date, interval.hour, interval.minute);
+    var intervalEnd = createTime(date, interval.hour + interval.length, interval.minute + interval.length);
+
+    classPeriod = classPeriod || {startDate: intervalStart, endDate: intervalEnd, roomId: roomId};
+
+    return classPeriod;
+  },
+
   render: function() {
-    var classPeriod = this.props.classPeriod;
+    var classPeriod = this._findClassPeriod();
     var cid = classPeriod.classId || null;
     var tid = classPeriod.teacherId || null;
     var classPlaceholder = "何もない";
-    var studentPlaceholder = "誰もない";
+    var teacherPlaceholder = "誰もない";
 
     var classInput;
-    var studentInput;
+    var teacherInput;
+
+    var csNames = ["ClassList"];
+    var tsNames = ["TeacherList"];
+
+    if (cid) {
+      csNames.push("ListSelected");
+    }
+    if (tid) {
+      tsNames.push("ListSelected");
+    }
+
     if (this.state.classFocused) {
       classInput = (<ReactSelect
           placeholder={classPlaceholder}
-          className="ClassList"
+          className={csNames.join(" ")}
           clearable={false}
           value={cid}
           options={this._findClassList()}
@@ -112,24 +158,26 @@ var ClassPeriodCell = React.createClass({
         />)
     }
     else {
-      classInput = (<input className="ClassList" onFocus={this._onFocus("classFocused")} readOnly={true} value={classPlaceholder} />)
+      var c = ClassStore.findById(cid);
+      classInput = (<input className={csNames.join(" ")} onFocus={this._onFocus("classFocused")} readOnly={true} value={c ? c.name_jp : classPlaceholder} />)
     }
 
 
-    if (this.state.studentFocused) {
-      studentInput = (<ReactSelect
-          placeholder={studentPlaceholder}
-          className="StudentList"
+    if (this.state.teacherFocused) {
+      teacherInput = (<ReactSelect
+          placeholder={teacherPlaceholder}
+          className={tsNames.join(" ")}
           clearable={false}
           value={tid}
           autoFocus={true}
-          onBlur={this._onBlur("studentFocused")}
+          onBlur={this._onBlur("teacherFocused")}
           options={this._findTeacherList()}
           onChange={this.onTeacherSelect}
         />);
     }
     else {
-      studentInput = (<input className="StudentList" onFocus={this._onFocus("studentFocused")} readOnly={true} value="誰もない" />)
+      var t = TeacherStore.findById(tid);
+      teacherInput = (<input className={tsNames.join(" ")} onFocus={this._onFocus("teacherFocused")} readOnly={true} value={t ? t.name_jp : teacherPlaceholder} />)
     }
     var classNames = ["ClassPeriodCell"];
     if (this.props.lastCell) {
@@ -141,7 +189,7 @@ var ClassPeriodCell = React.createClass({
 
     return (
       <div className={classNames.join(" ")}>
-        {classInput}{studentInput}
+        {classInput}{teacherInput}
       </div>
     );
   }
@@ -200,38 +248,20 @@ var RoomRow = React.createClass({
     return {};
   },
 
-  createTime: function(date, hour, minute) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute).toJSON();
-  },
-
   render: function() {
     var room          = this.props.room;
     var intervals     = this.props.intervals;
     var totalInterval = this.props.totalInterval;
-    var classPeriods  = this.props.classPeriods || [];
     var date          = this.props.date;
 
     var roomCell = (<RoomCell room={room} />);
 
     var intervalCells = _.map(intervals, function(interval, i) {
-
-      var classPeriod = _.find(classPeriods, function(v) {
-        var startDate = new Date(v.startDate);
-        var hour = startDate.getHour();
-        var minutes = startDate.getMinutes();
-        return hour === interval.hours && minutes === interval.minutes;
-      }, this);
-
-      var intervalStart = this.createTime(date, interval.hour, interval.minute);
-      var intervalEnd = this.createTime(date, interval.hour + interval.length, interval.minute + interval.length);
-
-      classPeriod = classPeriod || {startDate: intervalStart, endDate: intervalEnd, room: room.id};
-
       return (<ClassPeriodCell interval={interval}
-                 totalInterval={totalInterval}
+                 roomId={room.id}
                  lastCell={(i + 1) === intervals.length}
                  firstCell={i === 0}
-                 classPeriod={classPeriod} />);
+                 date={date} />);
     }, this);
 
     var classNames = ["RoomRow"];
@@ -282,11 +312,24 @@ var DaySchedule = React.createClass({
       return (<RoomRow lastRow={(i + 1) === rooms.length} date={date} intervals={intervals} totalInterval={this.props.totalInterval} classPeriods={classPeriods} room={room}/>);
     }, this);
 
-    // TODO: Add out rooms as needed
+    var intervals = _.map(intervals, function(interval) {
+      function two(v) {
+        if (v < 10) { return '0' + v; }
+        else        { return '' + v; }
+      }
+
+      var start = two(interval.hour) + ':' + two(interval.minute);
+      var hUp = interval.hour + Math.floor((interval.minute + interval.length) / 60);
+      var mUp = (interval.minute + interval.length) % 60;
+      var end = two(hUp) + ':' + two(mUp);
+
+      return (<div className="DayScheduleInterval"><span>{start + ' - ' + end}</span></div>);
+    }, this);
 
     return (
       <div className="DaySchedule">
         <h3 className="DayScheduleHeader"><FormattedDate value={date}/></h3>
+        <div className="DayScheduleIntervals">{intervals}</div>
         {roomRows}
       </div>
     );

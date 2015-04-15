@@ -49,18 +49,22 @@ function createStore() {
 
     del: function(data, silenceChange) {
       var old = _valueMap[data.ui_id];
-      this.removeFromCache(old);
 
-      // TODO: This is super inefficient!  Do I need to keep this around?
-      _.values = _.filter(_values, function(v) {
-        return v.ui_id !== data.ui_id;
-      });
+      if (old) {
+        this.removeFromCache(old);
+        // TODO: This is super inefficient!  Do I need to keep this around?
+        _values = _.filter(_values, function(v) {
+          return v.ui_id !== data.ui_id;
+        });
 
-      delete _valueMap[data.ui_id];
+        delete _valueMap[data.ui_id];
 
-      if (!silenceChange) {
-        this.emitChange();
+        if (!silenceChange) {
+          this.emitChange();
+        }
       }
+
+
     },
 
     save: function(row, silenceChange) {
@@ -88,6 +92,8 @@ function createStore() {
       if (!silenceChange) {
         this.emitChange();
       }
+      console.log(_values);
+      console.log(_valueMap);
     },
 
     removeFromCache: function() {

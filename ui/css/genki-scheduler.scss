@@ -114,6 +114,19 @@ $lightGreyTextColor: #aaaaaa;
       width: 984px;
       padding: 10px;
     }
+
+    .DayScheduleIntervals {
+
+      font-size: 10px;
+      font-weight: bold;
+      padding-left: 42px;
+      .DayScheduleInterval {
+        display: inline-block;
+        width: 120px;
+        border: 0;
+      }
+    }
+
   }
 
   .RoomRow {
@@ -131,6 +144,11 @@ $lightGreyTextColor: #aaaaaa;
       color: $lightGreyTextColor;
     }
 
+    .ClassPeriodCell {
+      input.ListSelected {
+        color: #000;
+      }
+    }
 
     .ClassPeriodCell {
       input.ClassList {
@@ -138,7 +156,7 @@ $lightGreyTextColor: #aaaaaa;
         border-top-color: $darkerGrey;
       }
 
-      input.StudentList {
+      input.TeacherList {
         border-width: 1px 0px 0px 1px;
       }
 
@@ -164,14 +182,14 @@ $lightGreyTextColor: #aaaaaa;
     }
 
     .ClassPeriodLastCell {
-      input.ClassList, input.StudentList {
+      input.ClassList, input.TeacherList {
         border-width: 1px 1px 0px 1px;
         border-right-color: $darkerGrey;
       }
     }
 
     .ClassPeriodFirstCell {
-      input.ClassList, input.StudentList {
+      input.ClassList, input.TeacherList {
         border-left-color: $darkerGrey;
       }
     }
@@ -201,20 +219,20 @@ $lightGreyTextColor: #aaaaaa;
   .RoomRowLast {
 
     .ClassPeriodFirstCell {
-      input.ClassList, input.StudentList {
+      input.ClassList, input.TeacherList {
         border-left-color: $darkerGrey;
       }
     }
 
     .ClassPeriodLastCell {
-      input.ClassList, input.StudentList {
+      input.ClassList, input.TeacherList {
         border-width: 1px 1px 0px 1px;
         border-right-color: $darkerGrey;
       }
     }
 
     .ClassPeriodCell {
-      input.StudentList {
+      input.TeacherList {
         border-width: 1px 1px 1px 1px;
         border-bottom-color: $darkerGrey;
       }

@@ -63,6 +63,14 @@
     color: white;
     width: 984px;
     padding: 10px; }
+  .GenkiScheduler .DaySchedule .DayScheduleIntervals {
+    font-size: 10px;
+    font-weight: bold;
+    padding-left: 42px; }
+    .GenkiScheduler .DaySchedule .DayScheduleIntervals .DayScheduleInterval {
+      display: inline-block;
+      width: 120px;
+      border: 0; }
   .GenkiScheduler .RoomRow {
     width: 100%;
     position: relative;
@@ -75,6 +83,8 @@
       border-width: 0px;
       text-indent: 10px;
       color: #aaaaaa; }
+    .GenkiScheduler .RoomRow .ClassPeriodCell input.ListSelected {
+      color: #000; }
     .GenkiScheduler .RoomRow .ClassPeriodCell {
       display: block;
       width: 120px;
@@ -82,7 +92,7 @@
       .GenkiScheduler .RoomRow .ClassPeriodCell input.ClassList {
         border-width: 1px 1px 0px 1px;
         border-top-color: #dedede; }
-      .GenkiScheduler .RoomRow .ClassPeriodCell input.StudentList {
+      .GenkiScheduler .RoomRow .ClassPeriodCell input.TeacherList {
         border-width: 1px 0px 0px 1px; }
       .GenkiScheduler .RoomRow .ClassPeriodCell .Select .Select-arrow {
         display: none; }
@@ -92,10 +102,10 @@
         padding-top: 4px;
         border-radius: 0px;
         padding-bottom: 3px; }
-    .GenkiScheduler .RoomRow .ClassPeriodLastCell input.ClassList, .GenkiScheduler .RoomRow .ClassPeriodLastCell input.StudentList {
+    .GenkiScheduler .RoomRow .ClassPeriodLastCell input.ClassList, .GenkiScheduler .RoomRow .ClassPeriodLastCell input.TeacherList {
       border-width: 1px 1px 0px 1px;
       border-right-color: #dedede; }
-    .GenkiScheduler .RoomRow .ClassPeriodFirstCell input.ClassList, .GenkiScheduler .RoomRow .ClassPeriodFirstCell input.StudentList {
+    .GenkiScheduler .RoomRow .ClassPeriodFirstCell input.ClassList, .GenkiScheduler .RoomRow .ClassPeriodFirstCell input.TeacherList {
       border-left-color: #dedede; }
     .GenkiScheduler .RoomRow .RoomCell {
       width: 40px;
@@ -113,11 +123,11 @@
           position: absolute;
           top: 10px;
           left: 3px; }
-  .GenkiScheduler .RoomRowLast .ClassPeriodFirstCell input.ClassList, .GenkiScheduler .RoomRowLast .ClassPeriodFirstCell input.StudentList {
+  .GenkiScheduler .RoomRowLast .ClassPeriodFirstCell input.ClassList, .GenkiScheduler .RoomRowLast .ClassPeriodFirstCell input.TeacherList {
     border-left-color: #dedede; }
-  .GenkiScheduler .RoomRowLast .ClassPeriodLastCell input.ClassList, .GenkiScheduler .RoomRowLast .ClassPeriodLastCell input.StudentList {
+  .GenkiScheduler .RoomRowLast .ClassPeriodLastCell input.ClassList, .GenkiScheduler .RoomRowLast .ClassPeriodLastCell input.TeacherList {
     border-width: 1px 1px 0px 1px;
     border-right-color: #dedede; }
-  .GenkiScheduler .RoomRowLast .ClassPeriodCell input.StudentList {
+  .GenkiScheduler .RoomRowLast .ClassPeriodCell input.TeacherList {
     border-width: 1px 1px 1px 1px;
     border-bottom-color: #dedede; }

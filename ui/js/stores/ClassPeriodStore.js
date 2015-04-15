@@ -55,23 +55,29 @@ var ClassPeriodStore = assign(FluxStore.createStore(), {
 
     var dateKey = formatDayKey(new Date(startDate));
     var dayBlock = dayToRoomMap[dateKey] || {};
-    var rooms = dayBlock[roomId] || [];
+    var classPeriods = dayBlock[roomId] || [];
 
     // For now, we"ll assume that the class periods will always be the same... so we"ll only
     // need to remove one at most
-
     var sameInterval = function(v) {
       return v.startDate === startDate && v.endDate === endDate;
     };
 
-    var oldRoom = _.find(rooms, sameInterval);
-    if (oldRoom) {
-      this.del(oldRoom);
+    var oldClassPeriod = _.find(classPeriods, sameInterval);
+    if (oldClassPeriod) {
+      if (oldClassPeriod.ui_id === row.ui_id) {
+        this.removeFromDayToRoomMap(row);
+      }
+      else {
+        this.del(oldClassPeriod);
+      }
+      // Fetch the room one more time
+      classPeriods = dayBlock[roomId] || [];
     }
 
-    rooms.push(row);
-    rooms.sort(startDateSort);
-    dayBlock.rooms = rooms;
+    classPeriods.push(row);
+    classPeriods.sort(startDateSort);
+    dayBlock[roomId] = classPeriods;
     dayToRoomMap[dateKey] = dayBlock;
   },
 
@@ -83,14 +89,14 @@ var ClassPeriodStore = assign(FluxStore.createStore(), {
     var dateKey = formatDayKey(new Date(startDate));
     var dayBlock = dayToRoomMap[dateKey];
     if (dayBlock) {
-      var rooms = dayBlock[roomId];
-      if (rooms) {
+      var classPeriods = dayBlock[roomId];
+      if (classPeriods) {
         var sameInterval = function(v) {
           return v.startDate === startDate && v.endDate === endDate;
         };
-        var value = _.find(rooms, sameInterval);
+        var value = _.find(classPeriods, sameInterval);
         if (value) {
-          dayBlock[roomId] = _.difference(rooms, [value]);
+          dayBlock[roomId] = _.difference(classPeriods, [value]);
         }
       }
     }
@@ -125,12 +131,6 @@ AppDispatcher.register(function(action) {
   }
 });
 
-ClassPeriodStore.setAll([{
-  "start_date": "",
-  "end_date": "",
-  "class_id": "",
-  "room_id": "",
-  "teacher_id": ""
-}]);
+ClassPeriodStore.setAll([]);
 
 module.exports = ClassPeriodStore;
