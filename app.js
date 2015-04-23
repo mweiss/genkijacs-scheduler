@@ -38,9 +38,20 @@ app.use(passport.session());
 // TODO: change this to only use the javascript it outputs
 app.use(express.static(path.join(__dirname, 'ui')));
 
+// pages without authentication
+app.use('/auth', auth);
+// authenticate
+app.all('*',function(req,res,next){
+    if(req.isAuthenticated()){
+        next();
+    }else{
+        next(new Error(401)); // 401 Not Authorized
+    }
+});
+
+//pages where autentication is needed
 app.use('/', routes);
 app.use('/users', users);
-app.use('/auth', auth);
 app.use('/print', print);
 
 // catch 404 and forward to error handler

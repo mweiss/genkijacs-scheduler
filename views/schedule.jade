@@ -1,12 +1,11 @@
 extends layout
 
 block content
-  - var arr = ['michael', 'sascha'];
-  
-  each item in arr
+
+  each item in user
     h1= title
     div(id='info') infobox
-      p= item
+      p= item.firstname
     
     img(src='http://www.genkijacs.com/images/logo.png')
     div(id='day1') day1
