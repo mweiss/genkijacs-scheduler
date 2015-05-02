@@ -46,15 +46,15 @@ var TextInput = React.createClass({
    * Invokes the callback passed in as onSave, allowing this component to be
    * used in different ways.
    */
-  _save: function() {
-    this.props.onSave(this.state.value);
+  _save: function(v) {
+    this.props.onSave( (typeof v === 'string') ? v : this.state.value);
   },
 
   _onChange: function(event) {
     this.setState({
       value: event.target.value
     });
-    this._save();
+    this._save(event.target.value);
   },
 
   _onKeyDown: function(event) {

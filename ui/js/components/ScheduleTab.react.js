@@ -15,8 +15,6 @@ var TeacherStore     = require("../stores/TeacherStore");
 var TextInput        = require('./TextInput.react');
 var ReactSelect      = require('react-select');
 
-
-
 function createTime(date, hour, minute) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute).toJSON();
 }
@@ -130,7 +128,7 @@ var ClassPeriodCell = React.createClass({
     var cid = classPeriod.classId || null;
     var tid = classPeriod.teacherId || null;
     var classPlaceholder = "何もない";
-    var teacherPlaceholder = "誰もない";
+    var teacherPlaceholder = "誰もいない";
 
     var classInput;
     var teacherInput;
@@ -219,25 +217,26 @@ var RoomCell = React.createClass({
 
   render: function() {
     var room = this.props.room;
-    var clickHandler = null;
-    var roomCellContents;
+    var roomCellContents = [];
+
     // Render a room cell
     if (room.editData) {
-      roomCellContents = (
+      roomCellContents.push(
+        <div className="RoomCellEditOverlay">
         <form>
           <ul>
             <li><label name="name_jp">名前</label><TextInput onSave={this.onEdit("name_jp")} name="name_jp" type="text" value={room.name_jp} /></li>
             <li><label name="name_en">Name</label><TextInput onSave={this.onEdit("name_en")} name="name_en" type="text" value={room.name_en} /></li>
             <li><label name="capacity">Capacity</label><TextInput onSave={this.onEdit("capacity")} name="capacity" type="text" value={room.capacity} /></li>
-            <button onClick={this.onSave}>Save</button>
+            <button className="btn" onClick={this.onSave}>Save</button>
           </ul>
         </form>
+        </div>
         );
     }
-    else {
-      roomCellContents = (<div className="RoomCellOuter"><span className="RoomCellInner">{room.name_jp}</span></div>);
-      clickHandler = this.onStartEdit;
-    }
+
+    roomCellContents.push(<div className="RoomCellOuter"><span className="RoomCellInner">{room.name_jp}</span></div>);
+    var clickHandler = room.editData ? null : this.onStartEdit;
 
     return (<div onClick={clickHandler} className="RoomCell">{roomCellContents}</div>);
   }
@@ -251,7 +250,6 @@ var RoomRow = React.createClass({
   render: function() {
     var room          = this.props.room;
     var intervals     = this.props.intervals;
-    var totalInterval = this.props.totalInterval;
     var date          = this.props.date;
 
     var roomCell = (<RoomCell room={room} />);
@@ -299,18 +297,49 @@ var DaySchedule = React.createClass({
     this.setState({i : this.state.i + 1});
   },
 
-  renderBody: function() {
+  renderRoomRows: function() {
     var date = this.props.date;
     var data = ClassPeriodStore.findByDay(date);
     var rooms = RoomStore.all();
     var intervals = this.props.intervals;
-    var totalInterval = this.props.totalInterval;
 
     var roomRows = _.map(rooms, function(room, i) {
-      var classPeriods = data[room.id];
       // TODO: remove for correct logic last row logic
-      return (<RoomRow lastRow={(i + 1) === rooms.length} date={date} intervals={intervals} totalInterval={this.props.totalInterval} classPeriods={classPeriods} room={room}/>);
+      return (<RoomRow  date={date} intervals={intervals} room={room}/>);
     }, this);
+
+    var outRooms = _.filter(_.keys(data), function(key) {
+      return +key < 0 && data[key] && data[key].length && true;
+    });
+
+    // Create an out room for each room plus one
+    var outRoomMin = 0;
+    for (var i = 0; i < outRooms.length + 1; i += 1) {
+      var r;
+      if (i < outRooms.length) {
+        r = +outRooms[i];
+        outRoomMin = Math.min(outRoomMin, r);
+      }
+      else {
+        r = outRoomMin - 1;
+      }
+
+      var newRoom = {
+        id: r,
+        name_jp: "O" + Math.abs(r)
+      };
+      newRoom.name_en = newRoom.name_jp;
+      roomRows.push(<RoomRow lastRow={i === outRooms.length} date={date} intervals={intervals} room={newRoom} />)
+    }
+
+    return roomRows;
+  },
+
+  renderIntervals: function() {
+    var date = this.props.date;
+    var intervals = this.props.intervals;
+
+   // Search through the class period store and determine how many out rows there should be
 
     var intervals = _.map(intervals, function(interval) {
       function two(v) {
@@ -325,6 +354,14 @@ var DaySchedule = React.createClass({
 
       return (<div className="DayScheduleInterval"><span>{start + ' - ' + end}</span></div>);
     }, this);
+
+    return intervals;
+  },
+
+  renderBody: function() {
+    var date = this.props.date;
+    var intervals = this.renderIntervals();
+    var roomRows = this.renderRoomRows();
 
     return (
       <div className="DaySchedule">
@@ -399,14 +436,11 @@ var ScheduleTab = React.createClass({
     var startDate = this.state.startDate;
     var daySchedules = [];
 
-    // TODO: make this adjustable (via server)
-    var totalInterval = {start: {hour: 9, minute: 30}, end: {hour: 18, minute: 0}};
-
     for (var date = startDate;
          date.getDay() <= 5;  // Monday to Friday 
          date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1))
     {
-      daySchedules.push((<DaySchedule date={date} totalInterval={totalInterval} intervals={this.state.intervals} />));
+      daySchedules.push((<DaySchedule date={date} intervals={this.state.intervals} />));
     }
     // for each day in the week from monday to friday, add a DaySchedule
 

@@ -30,6 +30,11 @@ $ns: DataTable;
   input {
     width: 100%
   }
+  
+  .DataTableFilter {
+    width: 250px;
+    margin-bottom: 10px;
+  }
 
   .TextFieldDateRangePicker {
     display: inline-block;

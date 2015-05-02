@@ -12,6 +12,7 @@ function getColumns() {
       key: "name_jp",
       width: 200,
       editable: true,
+      filterable: true,
       sortable: true
     },
     {
@@ -19,6 +20,7 @@ function getColumns() {
       key: "name_en",
       width: 200,
       editable: true,
+      filterable: true,
       sortable: true
     },
     {
@@ -26,6 +28,7 @@ function getColumns() {
       key: "regisrations",
       width: 200,
       editable: true,
+      filterable: true,
       sortable: true
     },
     {

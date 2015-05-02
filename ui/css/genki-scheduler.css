@@ -110,6 +110,7 @@
     .GenkiScheduler .RoomRow .RoomCell {
       width: 40px;
       height: 40px;
+      position: relative;
       border-width: 1px 0px 1px 1px;
       border-style: solid;
       border-color: #dedede;
@@ -117,6 +118,25 @@
       display: block;
       float: left;
       margin-top: 10px; }
+      .GenkiScheduler .RoomRow .RoomCell .RoomCellEditOverlay {
+        width: 160px;
+        position: absolute;
+        z-index: 10;
+        background-color: white;
+        padding: 10px;
+        top: 100%;
+        border: 1px solid #dedede;
+        left: -1px; }
+        .GenkiScheduler .RoomRow .RoomCell .RoomCellEditOverlay label {
+          display: inline-block;
+          width: 75px; }
+        .GenkiScheduler .RoomRow .RoomCell .RoomCellEditOverlay input {
+          width: 75px; }
+        .GenkiScheduler .RoomRow .RoomCell .RoomCellEditOverlay button {
+          float: right;
+          margin-right: 7px;
+          font-size: 14px;
+          margin-top: 5px; }
       .GenkiScheduler .RoomRow .RoomCell .RoomCellOuter {
         position: relative; }
         .GenkiScheduler .RoomRow .RoomCell .RoomCellOuter .RoomCellInner {

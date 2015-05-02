@@ -14,21 +14,100 @@ var FormattedNumber = ReactIntl.FormattedNumber;
 
 var DataTable = React.createClass({
   getInitialState: function() {
-    return {};
+    return {
+      sortedColumnKey: null,
+      ascending: true,
+      filterText: null
+    };
   },
 
-  componentDidMount: function() {
-    // TODO: fill this in
+  _onSort: function(val) {
+    // Search for the column via the key
+    // If there's a sort function, use it, otherwise use the default sort
+    var state = _.clone(this.state);
+    if (state.sortedColumnKey === val.key) {
+      state.ascending = !state.ascending;
+    }
+    else {
+      state.ascending = true;
+      state.sortedColumnKey = val.key;
+    }
+    this.setState(state);
   },
 
-  componentWillUnmount: function() {
-    // TODO: fill this in
+  _makeDescending: function(f) {
+    return function(a, b) {
+      return -1 * f(a, b);
+    }
+  },
+
+  /**
+   * Returns the sorted and filtered data.
+   */
+  formatData: function() {
+    var data = this.props.data || [];
+    var key = this.state.sortedColumnKey;
+    var filterText = this.state.filterText;
+
+    if (filterText) {
+      var columnsToCheck = _.filter(this.props.columns, function(c) {
+        return c.filterable;
+      });
+
+      data = _.filter(data, function(d) {
+        for (var i = 0; i < columnsToCheck.length; i += 1) {
+          var ckey = columnsToCheck[i].key;
+          var val = d[ckey] || "";
+          if (val.toLowerCase().indexOf(filterText) !== -1) {
+            return true;
+          }
+        }
+        return false;
+      }, this);
+    }
+    if (key) {
+      var c = _.find(this.props.columns || [], function(v) {
+        return v.key === key;
+      });
+      var f;
+      if (c && c.sortFunction) {
+        f = c.sortFunction;
+      }
+      else {
+        f = function(a, b) {
+          var vA = a[key],
+              vB = b[key];
+          if (vA > vB) {
+            return 1;
+          }
+          else if (vA < vB) {
+            return -1;
+          }
+          else {
+            return 0;
+          }
+        };
+      }
+
+      if (!this.state.ascending) {
+        f = this._makeDescending(f);
+      }
+
+      data = _.clone(data).sort(f);
+    }
+    return data;
+  },
+
+  _onFilter: function(v) {
+    var state = _.clone(this.state);
+    state.filterText = (v || "").toLowerCase();
+    this.setState(state);
   },
 
   render: function() {
-    var data = this.props.data || [],
+    var data = this.formatData(),
         columns = this.props.columns || [],
-        headers = columns.map(function(v) { return { header: v.header || '', width: v.width }; });
+        headers = columns.map(function(v) { return { key: v.key, header: v.header || '', width: v.width, sortable: v.sortable }; });
 
     var rows = data.map(function(d, index) {
       var id = 'dtr-' + d.ui_id;
@@ -36,7 +115,19 @@ var DataTable = React.createClass({
     }, this);
 
     return (
-      <div className="DataTable"><table><DataTableHeader headers={headers} />{rows}</table></div>
+      <div className="DataTable">
+      <TextInput className="DataTableFilter" placeholder="検索" onSave={this._onFilter} />
+      <table>
+        <DataTableHeader
+          sortedColumnKey={this.state.sortedColumnKey}
+          ascending={this.state.ascending}
+          onSort={this._onSort}
+          headers={headers} />
+        <tbody>
+        {rows}
+        </tbody>
+      </table>
+      </div>
     );
   }
 });
@@ -46,24 +137,29 @@ var DataTableHeader = React.createClass({
     return {};
   },
 
-  componentDidMount: function() {
-    // TODO: fill this in
-  },
-
-  componentWillUnmount: function() {
-    // TODO: fill this in
-  }, 
-
   render: function() {
     var headers = this.props.headers || [];
+    var onSort = this.props.onSort;
 
     var tableHeaders = headers.map(function(v) {
       var styles = {};
       if (typeof v.width === 'number') {
         styles.width = v.width + "px";
       }
-      return (<th style={styles} key={v.header}>{v.header}</th>);
-    });
+      var onC = null;
+      if (v.sortable) {
+        onC = _.bind(function(e) {
+          if (this.props.onSort) {
+            onSort(v);
+          }
+        }, this);
+      }
+      var className = "";
+      if (v.key === this.props.sortedColumnKey) {
+        className = this.props.ascending ? "ascending" : "descending";
+      }
+      return (<th className={className} style={styles} onClick={onC} key={v.header}>{v.header}</th>);
+    }, this);
 
     return (<tr>{tableHeaders}</tr>);
   }
@@ -91,14 +187,6 @@ var DataTableRow = React.createClass({
       editColumnKey : key
     };
   },
-
-  componentDidMount: function() {
-    // TODO: fill this in
-  },
-
-  componentWillUnmount: function() {
-    // TODO: fill this in
-  }, 
 
   _resolveFormatter: function(formatter) {
     if (formatter) {

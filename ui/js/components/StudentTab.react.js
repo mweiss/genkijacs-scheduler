@@ -17,6 +17,7 @@ function getColumns() {
       header: "名前",
       key: "name_jp",
       width: 150,
+      filterable: true,
       editable: true,
       sortable: true
     },
@@ -25,6 +26,7 @@ function getColumns() {
       key: "name_en",
       width: 150,
       editable: true,
+      filterable: true,
       sortable: true
     },
     /*
