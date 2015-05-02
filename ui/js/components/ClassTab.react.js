@@ -10,7 +10,7 @@ function getColumns() {
     {
       header: "名前",
       key: "name_jp",
-      width: 200,
+      width: 20,
       editable: true,
       filterable: true,
       sortable: true
@@ -18,30 +18,29 @@ function getColumns() {
     {
       header: "Name",
       key: "name_en",
-      width: 200,
+      width: 20,
       editable: true,
       filterable: true,
       sortable: true
     },
     {
       header: "Registrations", // TODO: get a translations of this
-      key: "regisrations",
-      width: 200,
-      editable: true,
+      key: "registrations",
+      width: 30,
       filterable: true,
       sortable: true
     },
     {
       header: "Scheduled hours", // TODO: translate
       key: "scheduledHours",
-      width: 100,
+      width: 15,
       formatter: "number",
       sortable: true
     },
     {
       header: "Type", // TODO: translate
       key: "type",
-      width: 100,
+      width: 15,
       sortable: true
     }];
 }

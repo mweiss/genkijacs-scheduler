@@ -17,13 +17,24 @@ var DataTable = React.createClass({
     return {
       sortedColumnKey: null,
       ascending: true,
-      filterText: null
+      filterText: null,
+      columnGroupIndex: 0
     };
   },
 
+  _getColumns: function() {
+    if (this.props.columns) {
+      return this.props.columns;
+    }
+    else if (this.props.columnGroups) {
+      return this.props.columnGroups  [this.state.columnGroupIndex].columns;
+    }
+    else {
+      return [];
+    }
+  },
+
   _onSort: function(val) {
-    // Search for the column via the key
-    // If there's a sort function, use it, otherwise use the default sort
     var state = _.clone(this.state);
     if (state.sortedColumnKey === val.key) {
       state.ascending = !state.ascending;
@@ -48,9 +59,10 @@ var DataTable = React.createClass({
     var data = this.props.data || [];
     var key = this.state.sortedColumnKey;
     var filterText = this.state.filterText;
+    var columns = this._getColumns();
 
     if (filterText) {
-      var columnsToCheck = _.filter(this.props.columns, function(c) {
+      var columnsToCheck = _.filter(columns, function(c) {
         return c.filterable;
       });
 
@@ -66,7 +78,7 @@ var DataTable = React.createClass({
       }, this);
     }
     if (key) {
-      var c = _.find(this.props.columns || [], function(v) {
+      var c = _.find(columns || [], function(v) {
         return v.key === key;
       });
       var f;
@@ -106,17 +118,43 @@ var DataTable = React.createClass({
 
   render: function() {
     var data = this.formatData(),
-        columns = this.props.columns || [],
+        columns = this._getColumns(),
         headers = columns.map(function(v) { return { key: v.key, header: v.header || '', width: v.width, sortable: v.sortable }; });
 
     var rows = data.map(function(d, index) {
       var id = 'dtr-' + d.ui_id;
-      return (<DataTableRow index={index} actions={this.props.actions} key={id} data={d} columns={columns} />);
+      return (<DataTableRow lastRow={index === data.length - 1} index={index} actions={this.props.actions} key={id} data={d} columns={columns} />);
     }, this);
 
+    var columnGroups = null;
+    if (this.props.columnGroups) {
+      var links = _.map(this.props.columnGroups, function(cg, i) {
+        var oC = _.bind(function(e) {
+          if (e.preventDefault) {
+            e.preventDefault();
+          }
+          var state = _.clone(this.state);
+          state.columnGroupIndex = i;
+          this.setState(state);
+        }, this);
+        var classNames = [];
+        if (this.state.columnGroupIndex === i) {
+          classNames.push("selected");
+        }
+        if (i === 0) {
+          classNames.push("first")
+        }
+        return (<a href="#" className={classNames.join(" ")} onClick={oC}>{cg.header}</a>);
+      }, this);
+
+      columnGroups = (<div className="columnGroups">{links}</div>);
+    }
     return (
       <div className="DataTable">
+      <div className="DataTableTools">
       <TextInput className="DataTableFilter" placeholder="検索" onSave={this._onFilter} />
+      {columnGroups}
+      </div>
       <table>
         <DataTableHeader
           sortedColumnKey={this.state.sortedColumnKey}
@@ -144,7 +182,7 @@ var DataTableHeader = React.createClass({
     var tableHeaders = headers.map(function(v) {
       var styles = {};
       if (typeof v.width === 'number') {
-        styles.width = v.width + "px";
+        styles.width = v.width + "%";
       }
       var onC = null;
       if (v.sortable) {
@@ -184,7 +222,8 @@ var DataTableRow = React.createClass({
     }
 
     return {
-      editColumnKey : key
+      editColumnKey : key,
+      error: false
     };
   },
 
@@ -242,7 +281,7 @@ var DataTableRow = React.createClass({
     return editingFunc;
   },
 
-  _createCell: function(column) {
+  _createCell: function(column, i) {
     var data      = this._editableData(),
         v         = data[column.key],
         formatter = this._resolveFormatter(column.formatter),
@@ -274,7 +313,15 @@ var DataTableRow = React.createClass({
       cellValue = formatter(v);
     }
 
-    return (<td onClick={editingFunc} key={key}><div>{cellValue}</div></td>);
+    var className = "";
+    if (i === 0) {
+      className = "FirstCell";
+    }
+    else if (i === this.props.columns.length - 1) {
+      className = "LastCell";
+    }
+
+    return (<td className={className} onClick={editingFunc} key={key}><div>{cellValue}</div></td>);
   },
 
   render: function() {
@@ -286,7 +333,11 @@ var DataTableRow = React.createClass({
       cells.push((<td className="save" key={id}><div><button onClick={this.updateRow}>Save</button></div></td>));
     }
 
-    return (<tr className={this.props.index % 2 === 0 ? 'DataTable__even' : 'DataTable__odd'}>{cells}</tr>) ;
+    var classNames = [this.props.index % 2 === 0 ? 'DataTable__even' : 'DataTable__odd'];
+    if (this.props.lastRow) {
+      classNames.push("DataTable__lastRow");
+    }
+    return (<tr className={classNames.join(" ")}>{cells}</tr>) ;
   }
 
 });

@@ -1,6 +1,7 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
 .GenkiScheduler {
-  font-family: 'Open Sans', sans-serif; }
+  font-family: 'Open Sans', sans-serif;
+  color: #4B4E6B; }
   .GenkiScheduler header {
     background-color: #E94E77;
     margin-bottom: 50px; }
@@ -25,6 +26,7 @@
     margin-right: auto;
     margin-left: auto; }
     .GenkiScheduler .main .btn {
+      cursor: pointer;
       outline: none;
       border: none;
       color: #ffffff;
@@ -52,6 +54,7 @@
       .GenkiScheduler .DateHeader div.dateBtnGroup button {
         margin-right: 2px; }
     .GenkiScheduler .DateHeader div.actionBtnGroup {
+      margin-right: 194px;
       float: right; }
       .GenkiScheduler .DateHeader div.actionBtnGroup button {
         margin-right: 2px; }

@@ -1,16 +1,48 @@
 $ns: DataTable;
+$lightPink: #fff4f5;
 
 .#{$ns} {
   font-size: 14px;
 
+  > table {
+    width: 984px; 
+  }
+
+  .columnGroups {
+
+    margin-left: 20px;
+    float: right;
+    margin-right: 204px;
+
+    a {
+      padding-right: 15px;
+      padding-left: 15px;
+      display: inline-block;
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    a.first {
+      border-left: 0px;
+    }
+
+    a.selected {
+      color: #000;
+    }
+  }
+
   th {
-    font-weight: bold;
-    border-bottom: 1px solid black;
-    text-indent: 5px;
+    border-bottom: 1px solid white;
+    padding-bottom: 10px;
+    color: white;
+    padding-top: 10px;
+    text-indent: 8px;
+    cursor: pointer;
+    border-right: 1px solid #D68189;
+    background-color: #D68189;
   }
 
   td {
-    border-bottom: 1px solid #cccccc;
   }
 
   td.save {
@@ -22,9 +54,22 @@ $ns: DataTable;
     padding: 6px 8px 6px 8px;
   }
 
-  
-  &__even {
-    background-color: #f9f9f9;
+  &__odd {
+    background-color: $lightPink;
+  }
+
+  &__lastRow {
+  }
+
+  .DataTableTools {
+    margin-top: 80px;
+    margin-bottom: 5px;
+  }
+
+  .FirstCell {
+  }
+
+  .LastCell {
   }
 
   input {

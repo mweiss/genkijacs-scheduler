@@ -1,18 +1,40 @@
 .DataTable {
   font-size: 14px; }
+  .DataTable > table {
+    width: 984px; }
+  .DataTable .columnGroups {
+    margin-left: 20px;
+    float: right;
+    margin-right: 204px; }
+    .DataTable .columnGroups a {
+      padding-right: 15px;
+      padding-left: 15px;
+      display: inline-block;
+      font-size: 16px;
+      text-decoration: none; }
+    .DataTable .columnGroups a.first {
+      border-left: 0px; }
+    .DataTable .columnGroups a.selected {
+      color: #000; }
   .DataTable th {
-    font-weight: bold;
-    border-bottom: 1px solid black;
-    text-indent: 5px; }
-  .DataTable td {
-    border-bottom: 1px solid #cccccc; }
+    border-bottom: 1px solid white;
+    padding-bottom: 10px;
+    color: white;
+    padding-top: 10px;
+    text-indent: 8px;
+    cursor: pointer;
+    border-right: 1px solid #D68189;
+    background-color: #D68189; }
   .DataTable td.save {
     background-color: white;
     border-bottom: 0px none; }
   .DataTable td > div {
     padding: 6px 8px 6px 8px; }
-  .DataTable__even {
-    background-color: #f9f9f9; }
+  .DataTable__odd {
+    background-color: #fff4f5; }
+  .DataTable .DataTableTools {
+    margin-top: 80px;
+    margin-bottom: 5px; }
   .DataTable input {
     width: 100%; }
   .DataTable .DataTableFilter {
