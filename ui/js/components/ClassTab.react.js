@@ -71,8 +71,7 @@ var ClassTab = React.createClass({
   },
 
   render: function() {
-    return (<div><DataTable data={this.state.classes} actions={ClassActions} columns={getColumns()}></DataTable>
-            <button onClick={ClassActions.new}>Add class</button></div>)
+    return (<div><DataTable data={this.state.classes} entityType="class" actions={ClassActions} columns={getColumns()}></DataTable></div>)
   }
 });
 

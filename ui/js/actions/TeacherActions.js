@@ -14,6 +14,7 @@ var TeacherActions = {
   },
 
   save: function(teacher) {
+    /*
     WebAPIUtils.makeRequest({
       url: '/teachers',
       method: 'post',
@@ -22,14 +23,17 @@ var TeacherActions = {
         console.log('TA.update.success', resp);
       }
     });
+    */
 
     AppDispatcher.dispatch({
-      actionType: SchedulerConstants.TEACHER_SAVE,
-      row: teacher
+      actionType: SchedulerConstants.TEACHER_VALIDATE_AND_SAVE,
+      success: function() {
+        console.log('success!');
+      }
     });
   },
 
-  new: function() {
+  newRow: function() {
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.TEACHER_NEW
     });

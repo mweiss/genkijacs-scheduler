@@ -37,6 +37,57 @@ function createStore() {
       this.removeListener(CHANGE_EVENT, callback);
     },
 
+    rowsWithEditValues: function() {
+      return _.filter(_values, function(v) {
+        return v.editData && true;
+      });
+    },
+
+    validateAndSave: function(success) {
+      if (this.validate()) {
+        success(this.rowsWithEditValues());
+        this.saveAll();
+      }
+      else {
+        this.emitChange();
+      }
+    },
+
+    saveAll: function() {
+      _.each(this.rowsWithEditValues(), function(v) {
+        this.save(v, true);
+      }, this);
+      this.emitChange();
+    },
+
+    /**
+     *  Returns true if the data that's been edited is in a valid state, false otherwise.
+     *  This method also updates the errors property if there are issues with the edit data.
+     */
+    validate: function() {
+      var valid = true;
+      _.each(this.rowsWithEditValues(), function(v) {
+        var newObject = _.extend({}, v, v.editData);
+        var errors = this.validateObject(newObject, v);
+        if (errors && errors.length > 0) {
+          v.errors = errors;
+          valid = false;
+        }
+        else if (v.errors) {
+          delete v.errors;
+        }
+      }, this);
+      return valid;
+    },
+
+    validateRequire: function(obj, keys, errs) {
+      _.each(keys, function(key) {
+        if (!obj[key]) {
+          errs.push({key: key, msg: "このフォームフィールドを入れてください。"});
+        }
+      });
+    },
+
     edit: function(data) {
       var row = _valueMap[data.ui_id];
       if (row) {

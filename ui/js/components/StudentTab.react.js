@@ -122,8 +122,7 @@ var StudentTab = React.createClass({
       return cloned;
     });
 
-    return (<div><DataTable data={students} actions={StudentActions} columnGroups={getColumnGroups()}></DataTable>
-            <button onClick={StudentActions.new}>Add student</button></div>)
+    return (<div><DataTable data={students} entityType="student" actions={StudentActions} columnGroups={getColumnGroups()}></DataTable></div>)
   }
 });
 

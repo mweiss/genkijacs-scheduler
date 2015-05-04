@@ -8,11 +8,29 @@ $lightPink: #fff4f5;
     width: 984px; 
   }
 
-  .columnGroups {
-
-    margin-left: 20px;
+  .EditButtons {
+    button {
+      margin-left: 10px; 
+    }
+    margin-top: 10px;
+    margin-bottom: 10px;
     float: right;
-    margin-right: 204px;
+    margin-right: 216px;
+  }
+
+  .DataTableFilter {
+    margin-top: 24px;
+    width: 250px;
+    margin-bottom: 10px;
+    display: block;
+    float: left;
+  }
+
+  .columnGroups {
+    margin-top: 24px;
+    display: block;
+    float:left;
+    margin-left: 20px;
 
     a {
       padding-right: 15px;
@@ -38,7 +56,6 @@ $lightPink: #fff4f5;
     padding-top: 10px;
     text-indent: 8px;
     cursor: pointer;
-    border-right: 1px solid #D68189;
     background-color: #D68189;
   }
 
@@ -61,8 +78,11 @@ $lightPink: #fff4f5;
   &__lastRow {
   }
 
+  &__error {
+    border-bottom: 2px solid #ff0000;
+  }
+
   .DataTableTools {
-    margin-top: 80px;
     margin-bottom: 5px;
   }
 
@@ -76,10 +96,7 @@ $lightPink: #fff4f5;
     width: 100%
   }
   
-  .DataTableFilter {
-    width: 250px;
-    margin-bottom: 10px;
-  }
+
 
   .TextFieldDateRangePicker {
     display: inline-block;

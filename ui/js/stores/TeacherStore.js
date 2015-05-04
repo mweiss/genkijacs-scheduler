@@ -19,13 +19,18 @@ var TeacherStore = assign(FluxStore.createStore(), {
       "privateHours": 0,
       "groupHours": 11
     };
+  },
+  validateObject: function(obj) {
+    var errors = [];
+    this.validateRequire(obj, ["name_jp", "name_en"], errors);
+    return errors;
   }
 });
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case SchedulerConstants.TEACHER_SAVE:
-      TeacherStore.save(action.row);
+    case SchedulerConstants.TEACHER_VALIDATE_AND_SAVE:
+      TeacherStore.validateAndSave(action.success);
       break;
 
     case SchedulerConstants.TEACHER_NEW:

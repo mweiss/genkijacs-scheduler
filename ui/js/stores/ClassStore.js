@@ -13,14 +13,19 @@ var ClassStore = assign(FluxStore.createStore(), {
       "name_en": "",
       "type": "normal" // todo: enumerate the class types
     };
+  },
+  validateObject: function(obj) {
+    var errors = [];
+    this.validateRequire(obj, ["name_jp", "name_en"], errors);
+    return errors;
   }
 });
 
 // TODO: This seems similar to teacher and student, perhaps we can combine the abstraction?
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case SchedulerConstants.CLASS_SAVE:
-      ClassStore.save(action.row);
+    case SchedulerConstants.CLASS_VALIDATE_AND_SAVE:
+      ClassStore.validateAndSave(action.success);
       break;
 
     case SchedulerConstants.CLASS_NEW:
