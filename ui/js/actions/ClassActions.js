@@ -15,6 +15,7 @@ var ClassActions = {
   },
 
   save: function(cl) {
+    /*
     WebAPIUtils.makeRequest({
       url: '/classes',
       method: 'post',
@@ -23,14 +24,17 @@ var ClassActions = {
         console.log('SA.update.success', resp);
       }
     });
+*/
 
     AppDispatcher.dispatch({
-      actionType: SchedulerConstants.CLASS_SAVE,
-      row: cl
+      actionType: SchedulerConstants.CLASS_VALIDATE_AND_SAVE,
+      success: function() {
+        console.log('success');
+      }
     });
   },
 
-  new: function() {
+  newRow: function() {
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.CLASS_NEW
     });

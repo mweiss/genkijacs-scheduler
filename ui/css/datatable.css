@@ -2,10 +2,24 @@
   font-size: 14px; }
   .DataTable > table {
     width: 984px; }
-  .DataTable .columnGroups {
-    margin-left: 20px;
+  .DataTable .EditButtons {
+    margin-top: 10px;
+    margin-bottom: 10px;
     float: right;
-    margin-right: 204px; }
+    margin-right: 216px; }
+    .DataTable .EditButtons button {
+      margin-left: 10px; }
+  .DataTable .DataTableFilter {
+    margin-top: 24px;
+    width: 250px;
+    margin-bottom: 10px;
+    display: block;
+    float: left; }
+  .DataTable .columnGroups {
+    margin-top: 24px;
+    display: block;
+    float: left;
+    margin-left: 20px; }
     .DataTable .columnGroups a {
       padding-right: 15px;
       padding-left: 15px;
@@ -23,7 +37,6 @@
     padding-top: 10px;
     text-indent: 8px;
     cursor: pointer;
-    border-right: 1px solid #D68189;
     background-color: #D68189; }
   .DataTable td.save {
     background-color: white;
@@ -32,14 +45,12 @@
     padding: 6px 8px 6px 8px; }
   .DataTable__odd {
     background-color: #fff4f5; }
+  .DataTable__error {
+    border-bottom: 2px solid #ff0000; }
   .DataTable .DataTableTools {
-    margin-top: 80px;
     margin-bottom: 5px; }
   .DataTable input {
     width: 100%; }
-  .DataTable .DataTableFilter {
-    width: 250px;
-    margin-bottom: 10px; }
   .DataTable .TextFieldDateRangePicker {
     display: inline-block; }
     .DataTable .TextFieldDateRangePicker input {

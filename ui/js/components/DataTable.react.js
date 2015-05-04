@@ -116,16 +116,7 @@ var DataTable = React.createClass({
     this.setState(state);
   },
 
-  render: function() {
-    var data = this.formatData(),
-        columns = this._getColumns(),
-        headers = columns.map(function(v) { return { key: v.key, header: v.header || '', width: v.width, sortable: v.sortable }; });
-
-    var rows = data.map(function(d, index) {
-      var id = 'dtr-' + d.ui_id;
-      return (<DataTableRow lastRow={index === data.length - 1} index={index} actions={this.props.actions} key={id} data={d} columns={columns} />);
-    }, this);
-
+  renderColumnGroups: function() {
     var columnGroups = null;
     if (this.props.columnGroups) {
       var links = _.map(this.props.columnGroups, function(cg, i) {
@@ -149,22 +140,82 @@ var DataTable = React.createClass({
 
       columnGroups = (<div className="columnGroups">{links}</div>);
     }
+    return columnGroups;    
+  },
+
+  saveAll: function() {
+    if (this.props.actions.save) {
+      this.props.actions.save();
+    }
+  },
+
+  discardAll: function() {
+    if (this.props.actions.discard) {
+      this.props.actions.discard();
+    }
+  },
+
+  newRow: function() {
+    if (this.props.actions.newRow) {
+      this.props.actions.newRow();
+    }
+  },
+
+  renderEditButtons: function(data) {
+    var unsavedChangesExist = _.filter(data, function(d) {
+      return d.editData && true;
+    }).length > 0;
+
+    var onSave = null,
+        onDiscard = null,
+        onNew = this.newRow,
+        classNames = ["btn"];
+    if (unsavedChangesExist) {
+      onSave = this.saveAll;
+      onDiscard = this.discardAll;
+    }
+    else {
+      classNames.push("disabled");
+    }
+
+    return (<div className="EditButtons">
+              <button className="btn AddButton" onClick={onNew}>New {this.props.entityType}</button>
+              <button className={classNames.join(" ")} onClick={onSave}>Save</button>
+              <button className={classNames.join(" ")} onClick={onDiscard}>Discard</button>
+            </div>);
+  },
+
+  render: function() {
+    var data = this.formatData(),
+        columns = this._getColumns(),
+        headers = columns.map(function(v) { return { key: v.key, header: v.header || '', width: v.width, sortable: v.sortable }; });
+
+    var rows = data.map(function(d, index) {
+      var id = 'dtr-' + d.ui_id;
+      return (<DataTableRow lastRow={index === data.length - 1} index={index} actions={this.props.actions} key={id} data={d} columns={columns} />);
+    }, this);
+
+    var columnGroups = this.renderColumnGroups();
+    var editButtons  = this.renderEditButtons(data);
+
     return (
       <div className="DataTable">
-      <div className="DataTableTools">
-      <TextInput className="DataTableFilter" placeholder="検索" onSave={this._onFilter} />
-      {columnGroups}
-      </div>
-      <table>
-        <DataTableHeader
-          sortedColumnKey={this.state.sortedColumnKey}
-          ascending={this.state.ascending}
-          onSort={this._onSort}
-          headers={headers} />
-        <tbody>
-        {rows}
-        </tbody>
-      </table>
+        <div className="DataTableTools">
+          <TextInput className="DataTableFilter" placeholder="検索" onSave={this._onFilter} />
+          {editButtons}
+          {columnGroups}
+        </div>
+        <table>
+          <DataTableHeader
+            sortedColumnKey={this.state.sortedColumnKey}
+            ascending={this.state.ascending}
+            onSort={this._onSort}
+            headers={headers} />
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+        {editButtons}
       </div>
     );
   }
@@ -212,7 +263,8 @@ var DataTableRow = React.createClass({
 
     // TODO: move this logic to the so that the data controls what's being edited,
     // and there aren't multiple sources of truth.
-    if (this.props.data && this.props.data._new && this.props.columns) {
+
+    if (this._isEditing() && this.props.data && this.props.data._new && this.props.columns) {
       var editableColumn = _.find(this.props.columns, function(c) {
         return c.editable;
       });
@@ -222,7 +274,7 @@ var DataTableRow = React.createClass({
     }
 
     return {
-      editColumnKey : key,
+      editColumnKey: key,
       error: false
     };
   },
@@ -260,20 +312,13 @@ var DataTableRow = React.createClass({
     }
   },
 
-  updateRow: function() {
-    if (this.props.actions.save) {
-      this.props.actions.save(_.clone(this.props.data));
-      this.setState({editColumnKey: null}); // I may be able to get rid of this
-    }
-  },
-
   _isEditing: function() {
     return this.props.data.editData && true;
   },
 
   fetchEditingFunction: function(column) {
     var editingFunc = null;
-    if (column.editable && !this.state.editColumnKey) {
+    if (column.editable && !this._isEditing()) {
       editingFunc = _.bind(function() {
         this._setEditing(column.key);
       }, this);
@@ -328,12 +373,10 @@ var DataTableRow = React.createClass({
     var columns = this.props.columns,
         cells = columns.map(this._createCell, this);
 
-    var id = 'save';
-    if (this._isEditing()) {
-      cells.push((<td className="save" key={id}><div><button onClick={this.updateRow}>Save</button></div></td>));
-    }
-
     var classNames = [this.props.index % 2 === 0 ? 'DataTable__even' : 'DataTable__odd'];
+    if (this.props.data.errors && this.props.data.errors.length > 0) {
+      classNames.push("DataTable__error");
+    }
     if (this.props.lastRow) {
       classNames.push("DataTable__lastRow");
     }

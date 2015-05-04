@@ -3,6 +3,8 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SchedulerConstants = require('../constants/SchedulerConstants');
 var WebAPIUtils = require('../http/WebAPIUtils');
+var ClassRegistrationStore = require("../stores/ClassRegistrationStore");
+var _ = require("underscore");
 
 var StudentActions = {
 
@@ -13,7 +15,7 @@ var StudentActions = {
     });
   },
 
-  save: function(student) {
+  save: function() {
     /*
     WebAPIUtils.makeRequest({
       url: '/students',
@@ -26,12 +28,18 @@ var StudentActions = {
     */
 
     AppDispatcher.dispatch({
-      actionType: SchedulerConstants.STUDENT_SAVE,
-      row: student
+      actionType: SchedulerConstants.STUDENT_VALIDATE_AND_SAVE,
+      success: function(values) {
+        // Save the students and class registrations
+        // update the class registrations.  TODO, for now, we'll just update class regs
+        _.each(values, function(v) {
+          ClassRegistrationStore.saveAssociations(v);
+        });
+      }
     });
   },
 
-  new: function() {
+  newRow: function() {
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.STUDENT_NEW
     });

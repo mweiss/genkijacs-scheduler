@@ -12,7 +12,6 @@ var DataTableListMixin = require('./DataTableListMixin.react');
 var ClassStore = require('../stores/ClassStore');
 var ReactSelect = require('react-select');
 
-
 var ClassRegistrationList = React.createClass({
 
   mixins: [DataTableListMixin],

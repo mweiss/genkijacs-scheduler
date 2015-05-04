@@ -18,13 +18,19 @@ var StudentStore = assign(FluxStore.createStore(), {
       "notes": "",
       "birthday": ""
     };
+  },
+
+  validateObject: function(obj) {
+    var errors = [];
+    this.validateRequire(obj, ["name_jp", "name_en"], errors);
+    return errors;
   }
 });
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case SchedulerConstants.STUDENT_SAVE:
-      StudentStore.save(action.row);
+    case SchedulerConstants.STUDENT_VALIDATE_AND_SAVE:
+      StudentStore.validateAndSave(action.success);
       break;
 
     case SchedulerConstants.STUDENT_NEW:
