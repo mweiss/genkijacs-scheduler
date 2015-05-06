@@ -7,6 +7,12 @@ var ClassRegistrationList = require('./ClassRegistrationList.react');
 var StudentStore   = require("../stores/StudentStore");
 var ClassRegistrationStore = require("../stores/ClassRegistrationStore");
 var StudentActions = require("../actions/StudentActions");
+if (!global.Intl) {
+    global.Intl = require('intl');
+}
+
+var ReactIntl = require('react-intl');
+var FormattedDate = ReactIntl.FormattedDate;
 var _ = require('underscore');
 
 var ClassesList = {}; // TODO: implement
@@ -16,6 +22,24 @@ function getColumnGroups() {
     {header: "Classes", columns: getColumns("classes")},
     {header: "Student Info", columns: getColumns("studentInfo")}
   ];
+}
+
+function birthdayFormatter(v, data) {
+  var d;
+  if (v) {
+    d = new Date(v);
+  }
+  return <FormattedDate value={d} />
+}
+
+function ageFormatter(v, data) {
+  var d = new Date(data.birthday);
+  var now = new Date();
+  var age = now.getFullYear() - d.getFullYear();
+  if (d.getMonth() > now.getMonth() || (d.getMonth() === now.getMonth() && d.getDate() > now.getDate())) {
+    age -= 1;
+  }
+  return "" + age;
 }
 
 function getColumns(type) {
@@ -53,6 +77,7 @@ function getColumns(type) {
     columns = columns.concat([{
       header: "年齢",
       key: "age",
+      formatter: ageFormatter,
       width: 12,
       editable: false,
       sortable: true
@@ -60,6 +85,7 @@ function getColumns(type) {
     {
       header: "生年月日",
       key: "birthday",
+      formatter: birthdayFormatter,
       width: 12,
       editable: false,
       sortable: true

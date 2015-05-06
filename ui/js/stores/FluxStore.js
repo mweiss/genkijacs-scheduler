@@ -98,6 +98,21 @@ function createStore() {
       }
     },
 
+    discard: function() {
+      _.each(this.rowsWithEditValues(), function(v) {
+        if (v._new) {
+          this.del(v, true);
+        }
+        if (v.errors) {
+         delete v.errors;
+        }
+        if (v.editData) {
+          delete v.editData;
+        }
+      }, this);
+      this.emitChange();
+    },
+
     del: function(data, silenceChange) {
       var old = _valueMap[data.ui_id];
 

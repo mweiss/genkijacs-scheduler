@@ -280,7 +280,10 @@ var DataTableRow = React.createClass({
   },
 
   _resolveFormatter: function(formatter) {
-    if (formatter) {
+    if (typeof formatter === 'function') {
+      return formatter;
+    }
+    else if (formatter) {
       switch (formatter) {
         case 'number':
           return function(v) {
@@ -355,7 +358,7 @@ var DataTableRow = React.createClass({
       cellValue = (<TextInput key={key} autoFocus={autoFocus} value={v} onSave={_onSave} />);
     }
     else {
-      cellValue = formatter(v);
+      cellValue = formatter(v, data);
     }
 
     var className = "";

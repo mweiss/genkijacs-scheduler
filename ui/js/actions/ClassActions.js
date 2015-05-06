@@ -14,7 +14,13 @@ var ClassActions = {
     });
   },
 
-  save: function(cl) {
+  discard: function() {
+    AppDispatcher.dispatch({
+      actionType: SchedulerConstants.CLASS_DISCARD
+    });
+  },
+
+  save: function() {
     /*
     WebAPIUtils.makeRequest({
       url: '/classes',

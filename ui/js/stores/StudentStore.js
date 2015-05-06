@@ -16,7 +16,7 @@ var StudentStore = assign(FluxStore.createStore(), {
       "home_country": "",
       "japanese_proficiency": "",
       "notes": "",
-      "birthday": ""
+      "birthday": "1986-03-14T00:00:00.000Z"
     };
   },
 
@@ -40,7 +40,11 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.STUDENT_EDIT:
       StudentStore.edit(action.row);
       break;
-      
+
+    case SchedulerConstants.STUDENT_DISCARD:
+      StudentStore.discard();
+      break;
+
     default:
       // no op
   }

@@ -24,23 +24,16 @@ function getColumns() {
       sortable: true
     },
     {
-      header: "Registrations", // TODO: get a translations of this
-      key: "registrations",
-      width: 30,
-      filterable: true,
-      sortable: true
-    },
-    {
       header: "Scheduled hours", // TODO: translate
       key: "scheduledHours",
-      width: 15,
+      width: 30,
       formatter: "number",
       sortable: true
     },
     {
       header: "Type", // TODO: translate
       key: "type",
-      width: 15,
+      width: 30,
       sortable: true
     }];
 }

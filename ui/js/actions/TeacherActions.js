@@ -13,6 +13,12 @@ var TeacherActions = {
     });
   },
 
+  discard: function() {
+    AppDispatcher.dispatch({
+      actionType: SchedulerConstants.TEACHER_DISCARD
+    });
+  },
+
   save: function(teacher) {
     /*
     WebAPIUtils.makeRequest({

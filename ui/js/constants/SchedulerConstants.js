@@ -4,14 +4,17 @@ var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
   TEACHER_VALIDATE_AND_SAVE: null,
+  TEACHER_DISCARD: null,
   TEACHER_NEW: null,
   TEACHER_EDIT: null,
 
   STUDENT_VALIDATE_AND_SAVE: null,
+  STUDENT_DISCARD: null,
   STUDENT_NEW: null,
   STUDENT_EDIT: null,
 
   CLASS_VALIDATE_AND_SAVE: null,
+  CLASS_DISCARD: null,
   CLASS_NEW: null,
   CLASS_EDIT: null,
 

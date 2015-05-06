@@ -15,6 +15,12 @@ var StudentActions = {
     });
   },
 
+  discard: function() {
+    AppDispatcher.dispatch({
+      actionType: SchedulerConstants.STUDENT_DISCARD
+    });
+  },
+
   save: function() {
     /*
     WebAPIUtils.makeRequest({

@@ -40,7 +40,11 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.TEACHER_EDIT:
       TeacherStore.edit(action.row);
       break;
-      
+
+    case SchedulerConstants.TEACHER_DISCARD:
+      TeacherStore.discard();
+      break;
+
     default:
       // no op
   }
