@@ -56,15 +56,20 @@
     .DataTable .TextFieldDateRangePicker input {
       width: 65px;
       margin-left: 5px; }
-    .DataTable .TextFieldDateRangePicker .dateRangeContainer {
+    .DataTable .TextFieldDateRangePicker input.DateRangeField {
+      width: 100%;
+      margin-left: 0px; }
+    .DataTable .TextFieldDateRangePicker .dateRangeContainer, .DataTable .TextFieldDateRangePicker .dateRangeContainerSingle {
       position: relative; }
-      .DataTable .TextFieldDateRangePicker .dateRangeContainer .DateRangePicker {
+      .DataTable .TextFieldDateRangePicker .dateRangeContainer .DateRangePicker, .DataTable .TextFieldDateRangePicker .dateRangeContainerSingle .DateRangePicker {
         z-index: 1;
         position: absolute;
         background-color: white;
         border: 1px solid black;
-        width: 650px;
         padding-bottom: 20px; }
+    .DataTable .TextFieldDateRangePicker .dateRangeContainer {
+      width: 650px;
+      position: absolute; }
   .DataTable .ClassRegistrationList {
     width: 110px;
     display: inline-block; }

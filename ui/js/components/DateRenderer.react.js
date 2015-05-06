@@ -1,22 +1,24 @@
-"use strict";
+'use strict';
 
 if (!global.Intl) {
     global.Intl = require('intl');
 }
 
-var React           = require('react');
+var React     = require('react');
+var ReactIntl = require('react-intl');
+var _         = require('underscore');
 var DateRangePicker = require('react-daterange-picker');
-var _ = require('underscore');
 var ClickOutsideHandlerMixin = require('./ClickOutsideHandlerMixin.react');
+var moment = require("moment");
 
-var TextFieldDateRangePicker = React.createClass({
+var DateRenderer = React.createClass({
+
   mixins: [ClickOutsideHandlerMixin],
 
   getInitialState: function() {
-    return {
-      dateRangePickerOpen: false
-    };
+    return {dateRangePickerOpen: false};
   },
+
 
   componentWillMount: function() {
     this._onMount();
@@ -28,10 +30,10 @@ var TextFieldDateRangePicker = React.createClass({
 
   // TODO: This sort of bubble up is really frowned upon in React... I should do this in a smarter way by
   // having an action for this!
-  handleSelect: function(dateRange) {
+  handleSelect: function(moment) {
     this.setState({dateRangePickerOpen: false}, this._unbindCloseMenuIfClickedOutside);
-    if (this.props.onSelect) {
-      this.props.onSelect(dateRange);
+    if (this.props.onSave) {
+      this.props.onSave(moment.format());
     }
   },
 
@@ -44,27 +46,28 @@ var TextFieldDateRangePicker = React.createClass({
     }
   },
 
-  _onBlur: function(e) {
+  _onBlur: function() {
+
   },
 
+  // TODO: consolidate this date format logic
   _formatDate: function(date) {
-    if (!date) {
+   if (!date) {
       return "";
     }
     var options = {
       year: 'numeric', month: 'numeric', day: 'numeric'
     };
+    var date = new Date(date)
     return new Intl.DateTimeFormat('jp', options).format(date);
   },
 
-  onChange: function() {
-    // TODO: I need to fill this in for react best practices
-  },
-
   render: function() {
-    var startDate = this.props.startDate;
-    var endDate = this.props.endDate;
-    var autoFocus = this.props.autoFocus;
+    var v = this.props.value;
+    var onSave = this.props.onSave;
+    var editing = this.props.editing;
+
+    // TODO: consolidate!!!!
     var rangePickerHidden = !this.state.dateRangePickerOpen;
     var rangePickerStyle = {};
 
@@ -75,25 +78,34 @@ var TextFieldDateRangePicker = React.createClass({
       rangePickerStyle.display = 'none';
     }
 
-    var rangePicker = (
-      <div className="dateRangeContainer" style={rangePickerStyle}>
+    if (editing) {
+      var initialDate = new Date("1996-01-01T00:00:00.000Z")
+      if (v) {
+        initialDate = new Date(v);
+      }
+      var rangePicker = (
+      <div className="dateRangeContainerSingle" style={rangePickerStyle}>
         <DateRangePicker ref="dateRangePicker"
           firstOfWeek={1}
-          numberOfCalendars={2}
-          selectionType='range'
-          earliestDate={new Date()} // should be derived from the server
+          value={moment(initialDate)}
+          selectionType='single'
+          numberOfCalendars={1}
+          initialFromValue={true}
           onSelect={this.handleSelect} />
       </div>
-    );
-    return  (
-            <div className="TextFieldDateRangePicker" ref="textFieldDateRangePicker">
-              <input type="text" onClick={this._onFocus} readOnly onBlur={this._onBlur} value={this._formatDate(startDate)} />
-              <input type="text" onClick={this._onFocus} onBlur={this._onBlur} readOnly value={this._formatDate(endDate)} />
-              {rangePicker}
-            </div>
-            );
+      );
+      return (<div className="TextFieldDateRangePicker" ref="textFieldDateRangePicker">
+          <input className="DateRangeField" type="text" onClick={this._onFocus} readOnly onBlur={this._onBlur} value={this._formatDate(v)} />
+          {rangePicker}
+        </div>)
+    }
+    else {
+      return <div>{this._formatDate(v)}</div>;
+    }
+
   }
 
 });
 
-module.exports = TextFieldDateRangePicker;
+module.exports = DateRenderer;
+

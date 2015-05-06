@@ -7,6 +7,8 @@ var ClassRegistrationList = require('./ClassRegistrationList.react');
 var StudentStore   = require("../stores/StudentStore");
 var ClassRegistrationStore = require("../stores/ClassRegistrationStore");
 var StudentActions = require("../actions/StudentActions");
+var DateRenderer = require("./DateRenderer.react");
+
 if (!global.Intl) {
     global.Intl = require('intl');
 }
@@ -85,9 +87,10 @@ function getColumns(type) {
     {
       header: "生年月日",
       key: "birthday",
+      renderer: DateRenderer,
       formatter: birthdayFormatter,
       width: 12,
-      editable: false,
+      editable: true,
       sortable: true
     },
     {

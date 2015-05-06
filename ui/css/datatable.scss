@@ -106,7 +106,12 @@ $lightPink: #fff4f5;
       margin-left: 5px;
     }
 
-    .dateRangeContainer {
+    input.DateRangeField {
+      width: 100%;
+      margin-left: 0px;
+    }
+
+    .dateRangeContainer, .dateRangeContainerSingle {
       position: relative;
 
       .DateRangePicker {
@@ -114,9 +119,13 @@ $lightPink: #fff4f5;
         position: absolute;
         background-color: white;
         border: 1px solid black;
-        width: 650px;
         padding-bottom: 20px;
       }
+    }
+
+    .dateRangeContainer {
+      width: 650px;
+      position: absolute;
     }
   }
 
