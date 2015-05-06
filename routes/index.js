@@ -100,4 +100,88 @@ router.post('/classes', function(req, res) {
 
 });
 
+/* valitation of schedules */
+router.post("/validation", function (req, res) {
+  
+  var list = {}, 
+      checked = {}, 
+      duplicate = {},
+      added = {},
+      duplicateIndex = 1;
+      
+  
+  for (var item in req.body.classPeriods) {
+    
+    list[item] = req.body.classPeriods[item];
+    console.log(item);
+    
+  }
+  
+  for (var item in list) {
+    if (list.hasOwnProperty(item)) {
+      
+      var obj = list[item];
+      
+      console.log(obj);
+      
+      added.class = 0;
+      added.room = 0;
+      added.teacher = 0;
+      
+      if (item == 1) {
+      
+        checked[item] = JSON.parse(JSON.stringify(obj));
+      
+      } else {
+      
+        for (var entry in checked) {
+          
+          if (obj.startDate == checked[entry].startDate && obj.endDate == checked[entry].endDate && obj.classId == checked[entry].classId && added.class == 0) {
+
+            duplicate[duplicateIndex] = JSON.parse(JSON.stringify(obj));
+            duplicate[duplicateIndex]["problem"] = "class";
+            duplicateIndex++;
+            added.class = 1;
+
+          } 
+          
+          if (obj.startDate == checked[entry].startDate && obj.endDate == checked[entry].endDate && obj.roomId == checked[entry].roomId && added.room == 0) {
+
+            duplicate[duplicateIndex] = JSON.parse(JSON.stringify(obj));
+            duplicate[duplicateIndex]["problem"] = "room";
+            duplicateIndex++;
+            added.room = 1;
+
+          } 
+          if (obj.startDate == checked[entry].startDate && obj.endDate == checked[entry].endDate && obj.teacherId == checked[entry].teacherId && added.teacher == 0) {
+
+            duplicate[duplicateIndex] = JSON.parse(JSON.stringify(obj));
+            duplicate[duplicateIndex]["problem"] = "teacher";
+            duplicateIndex++;
+            added.teacher = 1;
+
+          }
+
+          checked[item] = JSON.parse(JSON.stringify(obj));
+
+        }
+      }
+    }
+  }
+  
+  console.log("list");
+  console.log(list);
+  console.log("checked");
+  console.log(checked);
+  console.log("duplicate");
+  console.log(duplicate);
+  
+  if (duplicateIndex == 1) {
+    res.send("everything is fine");
+  } else {
+    res.send(duplicate);
+  }
+
+});
+
 module.exports = router;
