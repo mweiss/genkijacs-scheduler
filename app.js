@@ -41,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'ui')));
 // pages without authentication
 app.use('/auth', auth);
 // authenticate
+/*
 app.all('*',function(req,res,next){
     if(req.isAuthenticated()){
         next();
@@ -48,6 +49,7 @@ app.all('*',function(req,res,next){
         next(new Error(401)); // 401 Not Authorized
     }
 });
+*/
 
 //pages where autentication is needed
 app.use('/', routes);

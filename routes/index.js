@@ -3,101 +3,178 @@
 var express = require('express');
 var db = require('../models/index');
 var router = express.Router();
-var db = require('../models/index');
+var PromiseHelpers = require('../helpers/promise-helpers');
 
-/* GET home page. */
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
-});
+/**
+ *  Searches the array of translation texts (names) and returns the text of the translation that
+ *  matches the given language (lang).  Returns null if no translation could be found.
+ */
+function getTranslationText(names, lang) {
+  for (var i = 0; names && i < names.length; i += 1) {
+    var name = names[i];
+    if (name.lang === lang) {
+      return name.text;
+    }
+  }
+  return null;
+}
+
+/**
+ *  Fetches the translation texts specified by the columns argument (an array of strings).
+ *  Once all the translation texts have been fetched, the next function is called with the translations as arguments
+ *  Each entry in each translation array matches the same index of the entity in the entities array.
+ *  The number of arguments passed into the next callback is equal to the length of the columns attribute, e.g. there
+ *  is one argument for each column we're fetching translations for.
+ *
+ *  @param entities - An array of objects representing database entities
+ *  @param columns  - An array of strings representing columns on the entities that are translations
+ *  @param next     - A callback that is invoked once all the translation texts have been fetched.
+ */
+
+function findTranslationTexts(entities, columns, next) {
+  var i = 0, results = [];
+
+  function doNextThing(res) {
+    if (i !== 0) {
+      results.push(res);
+    }
+
+    if (i < columns.length) {
+
+      var translationPromises = entities.map(function(v) {
+        return db.Translation.findAll({ where: {
+          id: v[columns[i]]
+        }});
+      });
+
+      i += 1;
+
+      PromiseHelpers.chainPromises(translationPromises, doNextThing);
+    }
+    else {
+      next.apply(this, results);
+    }
+  }
+
+  doNextThing();
+}
+
+/**
+ * Helper method to fetch users from the database.  This is used when fetching teachers and students,
+ * since the code to fetch the two entities are quite similar.
+ */
+function fetchUsers(users, updateCallback, resultCallback) {
+  findTranslationTexts(users, ["firstname", "lastname"], function(firstnames, lastnames) {
+    var usrs = users.map(function(v, i) {
+      var usr = users[i];
+      var firstname = firstnames[i];
+      var lastname = lastnames[i];
+      var obj = {
+        id: usr.id,
+        firstname_en: getTranslationText(firstname, 'en'),
+        firstname_jp: getTranslationText(firstname, 'jp'),
+        lastname_en: getTranslationText(lastname, 'en'),
+        lastname_jp: getTranslationText(lastname, 'jp')
+      }
+      updateCallback(obj, usr);
+      return obj;
+    });
+    resultCallback.call(this, usrs);
+  });
+}
 
 /* teachers */
 router.get("/teachers", function (req, res) {
+  var findAllParams = { 
+    where: {
+      type: 'teacher'
+    },
+    include: [{ all: true}]};
   
-  if (typeof(req.query.user) !== 'undefined') {
-    console.log('TODO: get teacher by id');
-  } else {
-    db.User.all({ include: [{ all: true }]}).then(function (result) {
-      res.send(JSON.stringify(result));
+  db.User.findAll(findAllParams).then(function (users) {
+    var updateWithTeacherInfo = function(obj, entity) {
+      var teacher = entity.teacher;
+      obj.color = teacher.color;
+    };
+    fetchUsers(users, updateWithTeacherInfo, function(results) {
+      res.send(JSON.stringify(results));
     });
-  }
-  
-});
-
-router.post('/teachers', function(req, res) {
-
-  if (typeof(req.query.userid) !== 'undefined') {
-    console.log('TODO: implement edit/insert into teachers');
-  } else {
-    console.log('TODO: id not given ...');
-    res.status(200).json(null);
-  }
-
+  });  
 });
 
 /* students */
 router.get("/students", function (req, res) {
-  
-  if (typeof(req.query.user) !== 'undefined') {
-    console.log('TODO: get student by id');
-  } else {
-    db.User.all({ include: [{ all: true }]}).then(function (result) {
-      res.send(JSON.stringify(result));
+  var findAllParams = { 
+    where: {
+      type: 'student'
+    },
+    include: [{ all: true}]};
+
+  db.User.findAll(findAllParams).then(function (users) {
+    var updateWithTeacherInfo = function(obj, entity) {
+      var student = entity.student;
+      obj.country = student.country;
+      obj.primary_lang = student.primary_lang;
+      obj.jap_level = student.jap_level;
+      obj.note = student.note;
+    };
+    fetchUsers(users, updateWithTeacherInfo, function(results) {
+      res.send(JSON.stringify(results));
     });
-  }
-  
-});
-
-router.post('/students', function(req, res) {
-
-  if (typeof(req.query.userid) !== 'undefined') {
-    console.log('TODO: implement edit/insert into students');
-  } else {
-    console.log('TODO: id not given ...');
-    res.status(200).json(null);
-  }
-
+  });
 });
 
 /* rooms */
-router.get("/rooms", function (req, res) {
-  
-  if (typeof(req.query.roomid) !== 'undefined') {
-    console.log('TODO: get roombyid');
-  } else {
-    console.log('TODO: get all rooms');
-  }
-  
-});
-
-router.post('/rooms', function(req, res) {
-
-  if (typeof(req.query.roomid) !== 'undefined') {
-    console.log('TODO: implement edit/insert into rooms');
-  } else {
-    console.log('TODO: id not given ...');
-  }
-
+router.get('/rooms', function(req, res) {
+  db.Rooms.all({ include: [{ all: true}]}).then(function (result) {
+    findTranslationTexts(result, ["name"], function (names) {
+      var rooms = result.map(function(v, i) {
+        var rm = result[i];
+        var name = names[i] || [];
+        return {
+          id: rm.id,
+          capacity: rm.capacity,
+          name_en: getTranslationText(name, 'en'),
+          name_jp: getTranslationText(name, 'jp')
+        }
+      });
+      res.send(JSON.stringify(rooms));
+    });
+  });
 });
 
 /* classes */
 router.get("/classes", function (req, res) {
-  
-  if (typeof(req.query.classid) !== 'undefined') {
-    console.log('TODO: get class by id');
-  } else {
-    console.log('TODO: get all classes');
-  }
-  
+  db.Class.all({ include: [{ all: true }]}).then(function (result) {
+    findTranslationTexts(result, ["name"], function (names) {
+      var cls = result.map(function(v, i) {
+        var cl = result[i];
+        var name = names[i] || [];
+        return {
+          id: cl.id,
+          type: cl.type,
+          name_en: getTranslationText(name, 'en'),
+          name_jp: getTranslationText(name, 'jp')
+        }
+      });
+      res.send(JSON.stringify(cls));
+    });
+  });
 });
 
-router.post('/classes', function(req, res) {
+/* Class registrations */
+router.get('/class-registrations', function(req, res) {
+  db.Class_Registration.findAll({ where: ['deletion_date IS NULL'] }).then(function (result) {
+    res.send(JSON.stringify(result));
+  });
+});
 
-  if (typeof(req.query.classid) !== 'undefined') {
-    console.log('TODO: implement edit/insert into classes');
-  } else {
-    console.log('TODO: id not given ...');
-  }
-
+/*Class periods*/
+router.get('/class-periods', function(req, res) {
+  // TODO: use a smarter query than this to find class registrations
+  db.Class_Period.all().then(function (result) {
+    res.send(JSON.stringify(result));
+  });
 });
 
 /* valitation of schedules */

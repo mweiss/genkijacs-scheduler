@@ -1,9 +1,11 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('Class', {
+  var Class = sequelize.define('Class', {
     id: { type: DataTypes.INTEGER, primaryKey: true },
-    name: DataTypes.STRING,
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    name: DataTypes.INTEGER
   });
+
+  return Class;
 };

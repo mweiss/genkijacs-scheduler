@@ -120,8 +120,6 @@
       font-size: inherit;
       text-decoration: none; }
   .DateRangePicker__Date {
-    border: 0 solid #f4f5f6;
-    border-right-width: 1px;
     cursor: pointer;
     overflow: hidden;
     position: relative; }

@@ -1,27 +1,24 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes) {
-  var Class_periods = sequelize.define('Class_period', {
+  var ClassPeriod = sequelize.define('Class_Period', {
     id: { type: DataTypes.INTEGER, primaryKey: true },
+    version: DataTypes.INTEGER,
     start_date: DataTypes.DATE,
-    end_date: DataTypes.DATE,
-    class_id: DataTypes.INTEGER,
-    room_id: DataTypes.INTEGER,
-    teacher_id: DataTypes.INTEGER,
-    kind: DataTypes.STRING
+    end_date: DataTypes.DATE
   });
 
-  Class_periods.associate = function(db) {
-    Class_periods.hasOne(db.Class, { 
-      foreignKey: "id" 
+  ClassPeriod.associate = function(db) {
+    ClassPeriod.belongsTo(db.Class, { 
+      foreignKey: "class_id" 
     });
-    Class_periods.hasOne(db.Room, { 
-      foreignKey: "id" 
+    ClassPeriod.belongsTo(db.Room, { 
+      foreignKey: "room_id" 
     });
-    Class_periods.hasOne(db.Teacher, { 
-      foreignKey: "id" 
+    ClassPeriod.belongsTo(db.Teacher, { 
+      foreignKey: "teacher_id" 
     });
   };
 
-  return Class_periods;
+  return ClassPeriod;
 };

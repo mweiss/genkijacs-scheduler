@@ -23,7 +23,7 @@ var ClassRegistrationList = React.createClass({
   _findClassName: function(v) {
     var c = ClassStore.findById(v.classId);
     if (c) {
-      return c.name_en; // TODO: for now let's use the english name,
+      return (<span className="ClassRegistration_ClassName">{c.name_jp}</span>); // TODO: for now let's use the english name,
                         // although I may change this to be an object with several locales
     }
   },

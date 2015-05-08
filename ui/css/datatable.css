@@ -51,6 +51,10 @@
     margin-bottom: 5px; }
   .DataTable input {
     width: 100%; }
+  .DataTable .ClassRegistration_ClassName {
+    display: inline-block;
+    width: 90px;
+    white-space: nowrap; }
   .DataTable .TextFieldDateRangePicker {
     display: inline-block; }
     .DataTable .TextFieldDateRangePicker input {
