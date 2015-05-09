@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Class_Registration', {
-    id: { type: DataTypes.INTEGER, primaryKey: true },
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     class_id: DataTypes.INTEGER,
     student_id: DataTypes.INTEGER,
     start_date: DataTypes.DATE,
