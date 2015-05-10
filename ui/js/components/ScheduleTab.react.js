@@ -75,13 +75,23 @@ var ClassPeriodCell = React.createClass({
 
   onClassSelect: function(v) {
     var cp = _.clone(this._findClassPeriod());
-    cp.class_id = +v;
+    if (!v) {
+      cp.class_id = null;
+    }
+    else {
+      cp.class_id = +v;
+    }
     ClassPeriodActions.save(cp);
   },
 
   onTeacherSelect: function(v) {
     var cp = _.clone(this._findClassPeriod());
-    cp.teacher_id = +v;
+    if (!v) {
+      cp.teacher_id = null;
+    }
+    else {
+      cp.teacher_id = +v;
+    }
     ClassPeriodActions.save(cp);
   },
 
@@ -148,8 +158,8 @@ var ClassPeriodCell = React.createClass({
       classInput = (<ReactSelect
           placeholder={classPlaceholder}
           className={csNames.join(" ")}
-          clearable={false}
-          value={cid}
+          value={cid ? "" + cid : null}
+          clearValueText="Clear"
           options={this._findClassList()}
           onChange={this.onClassSelect}
           autoFocus={true}
@@ -166,8 +176,7 @@ var ClassPeriodCell = React.createClass({
       teacherInput = (<ReactSelect
           placeholder={teacherPlaceholder}
           className={tsNames.join(" ")}
-          clearable={false}
-          value={tid}
+          value={tid ? "" + tid : null}
           autoFocus={true}
           onBlur={this._onBlur("teacherFocused")}
           options={this._findTeacherList()}
