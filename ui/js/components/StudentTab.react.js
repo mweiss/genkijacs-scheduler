@@ -48,21 +48,38 @@ function getColumns(type) {
   // Common columns
   var columns = [
     {
-      header: "名前",
-      key: "name_jp",
-      width: 20,
+      header: "名",
+      key: "firstname_jp",
+      width: 10,
       filterable: true,
       editable: true,
       sortable: true
     },
     {
-      header: "Name",
-      key: "name_en",
-      width: 20,
+      header: "苗字",
+      key: "lastname_jp",
+      width: 10,
+      filterable: true,
+      editable: true,
+      sortable: true
+    },
+    {
+      header: "First name",
+      key: "firstname_en",
+      width: 10,
       editable: true,
       filterable: true,
       sortable: true
-    }];
+    },
+    {
+      header: "Last name",
+      key: "lastname_en",
+      width: 10,
+      editable: true,
+      filterable: true,
+      sortable: true
+    }
+    ];
 
   if (type === 'classes') {
     columns = columns.concat([
@@ -95,21 +112,21 @@ function getColumns(type) {
     },
     {
       header: "母国語",
-      key: "primary_language",
+      key: "primary_lang",
       width: 12,
       sortable: true,
       editable: true
     },
     {
       header: "国籍",
-      key: "home_country",
+      key: "country",
       width: 12,
       sortable: true,
       editable: true
     },
     {
       header: "日本語レベル",
-      key: "japanese_proficiency",
+      key: "japanese_level",
       width: 12,
       sortable: true,
       editable: true

@@ -72,14 +72,14 @@ var ClassPeriodCell = React.createClass({
 
   onClassSelect: function(v) {
     var cp = _.clone(this._findClassPeriod());
-    cp.classId = v;
+    cp.class_id = v;
     ClassPeriodStore.edit(cp);
     ClassPeriodStore.save(cp);
   },
 
   onTeacherSelect: function(v) {
     var cp = _.clone(this._findClassPeriod());
-    cp.teacherId = v;
+    cp.teacher_id = v;
     ClassPeriodStore.edit(cp);
     ClassPeriodStore.save(cp);
   },
@@ -109,7 +109,7 @@ var ClassPeriodCell = React.createClass({
     var classPeriods = days[roomId] || [];
 
     var classPeriod = _.find(classPeriods, function(v) {
-      var startDate = new Date(v.startDate);
+      var startDate = new Date(v.start_date);
       var hour = startDate.getHours();
       var minutes = startDate.getMinutes();
       return hour === interval.hour && minutes === interval.minute;
@@ -118,15 +118,15 @@ var ClassPeriodCell = React.createClass({
     var intervalStart = createTime(date, interval.hour, interval.minute);
     var intervalEnd = createTime(date, interval.hour + interval.length, interval.minute + interval.length);
 
-    classPeriod = classPeriod || {startDate: intervalStart, endDate: intervalEnd, roomId: roomId};
+    classPeriod = classPeriod || {start_date: intervalStart, end_date: intervalEnd, room_id: roomId};
 
     return classPeriod;
   },
 
   render: function() {
     var classPeriod = this._findClassPeriod();
-    var cid = classPeriod.classId || null;
-    var tid = classPeriod.teacherId || null;
+    var cid = classPeriod.class_id || null;
+    var tid = classPeriod.teacher_id || null;
     var classPlaceholder = "何もない";
     var teacherPlaceholder = "誰もいない";
 

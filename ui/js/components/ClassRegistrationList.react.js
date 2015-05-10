@@ -21,7 +21,7 @@ var ClassRegistrationList = React.createClass({
   // Generalize how data is determined in the DataTableListMixin or just set up the data so that
   // class registrations are visible on the data we're passing.
   _findClassName: function(v) {
-    var c = ClassStore.findById(v.classId);
+    var c = ClassStore.findById(v.class_id);
     if (c) {
       return (<span className="ClassRegistration_ClassName">{c.name_jp}</span>); // TODO: for now let's use the english name,
                         // although I may change this to be an object with several locales
@@ -78,9 +78,9 @@ var ClassRegistrationList = React.createClass({
       oldValue.end = this._formatDateValue(value, oldValue, "end");
     }
     else {
-      oldValue.classId = value || oldValue.classId || "";
+      oldValue.class_id = value || oldValue.class_id || "";
     }
-    oldValue.studentId = this.props.data.id;
+    oldValue.student_id = this.props.data.id;
 
     return oldValue
   },
@@ -91,7 +91,7 @@ var ClassRegistrationList = React.createClass({
 
   renderEditListItem: function(obj) {
     var v = obj.value;
-    var cid = v.classId + ""; // Converted toa  string because select doesn't recognize it the other way
+    var cid = v.class_id + ""; // Converted toa  string because select doesn't recognize it the other way
 
     return ([
       <ReactSelect
@@ -110,7 +110,7 @@ var ClassRegistrationList = React.createClass({
   },
 
   emptyItem: function() {
-    return {start: "", end: "", classId: "", studentId: this.props.data.id};
+    return {start: "", end: "", class_id: "", student_id: this.props.data.id};
   },
 
   showDeleteButton: function(v) {

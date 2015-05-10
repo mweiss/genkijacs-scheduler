@@ -8,17 +8,33 @@ var TeacherActions = require('../actions/TeacherActions');
 function getColumns() {
   return [
     {
-      header: "名前",
-      key: "name_jp",
-      width: 20,
+      header: "名",
+      key: "firstname_jp",
+      width: 10,
+      filterable: true,
+      editable: true,
+      sortable: true
+    },
+    {
+      header: "苗字",
+      key: "lastname_jp",
+      width: 10,
+      filterable: true,
+      editable: true,
+      sortable: true
+    },
+    {
+      header: "First name",
+      key: "firstname_en",
+      width: 10,
       editable: true,
       filterable: true,
       sortable: true
     },
     {
-      header: "Name",
-      key: "name_en",
-      width: 20,
+      header: "Last name",
+      key: "lastname_en",
+      width: 10,
       editable: true,
       filterable: true,
       sortable: true

@@ -86,11 +86,11 @@ var GenkiSchedulerApp = React.createClass({
       );
      }
      else if (this.state.error) {
-       // replace with a friendly error message
+       // TODO: replace with a friendly error message
        return (<div>Error</div>);
      }
      else {
-       // replace with a friendly loading message
+       // TODO: replace with a friendly loading message
        return (<div>Loading...</div>);
      }
 

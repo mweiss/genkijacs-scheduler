@@ -17,8 +17,8 @@ function formatDayKey(date) {
 }
 
 function startDateSort(a, b) {
-  var ad = new Date(a.startDate);
-  var bd = new Date(b.startDate);
+  var ad = new Date(a.start_date);
+  var bd = new Date(b.start_date);
 
   var time = bd.getTime() - ad.getTime();
   if (time > 0) {
@@ -35,11 +35,11 @@ function startDateSort(a, b) {
 var ClassPeriodStore = assign(FluxStore.createStore(), {
   initEntity: function() {
     return {
-      "startDate": "",
-      "endDate": "",
-      "classId": "",
-      "roomId": "",
-      "teacherId": ""
+      "start_date": "",
+      "end_date": "",
+      "class_id": "",
+      "room_id": "",
+      "teacher_id": ""
     };
   },
 
@@ -49,18 +49,18 @@ var ClassPeriodStore = assign(FluxStore.createStore(), {
   },
 
   addToClassPeriodDayMap: function(row) {
-    var startDate = row.startDate,
-        endDate   = row.endDate,
-        roomId    = row.roomId;
+    var start_date = row.start_date,
+        end_date   = row.end_date,
+        room_id    = row.room_id;
 
-    var dateKey = formatDayKey(new Date(startDate));
+    var dateKey = formatDayKey(new Date(start_date));
     var dayBlock = dayToRoomMap[dateKey] || {};
-    var classPeriods = dayBlock[roomId] || [];
+    var classPeriods = dayBlock[room_id] || [];
 
     // For now, we"ll assume that the class periods will always be the same... so we"ll only
     // need to remove one at most
     var sameInterval = function(v) {
-      return v.startDate === startDate && v.endDate === endDate;
+      return v.start_date === start_date && v.end_date === end_date;
     };
 
     var oldClassPeriod = _.find(classPeriods, sameInterval);
@@ -72,31 +72,31 @@ var ClassPeriodStore = assign(FluxStore.createStore(), {
         this.del(oldClassPeriod);
       }
       // Fetch the room one more time
-      classPeriods = dayBlock[roomId] || [];
+      classPeriods = dayBlock[room_id] || [];
     }
 
     classPeriods.push(row);
     classPeriods.sort(startDateSort);
-    dayBlock[roomId] = classPeriods;
+    dayBlock[room_id] = classPeriods;
     dayToRoomMap[dateKey] = dayBlock;
   },
 
   removeFromDayToRoomMap: function(row) {
-    var startDate = row.startDate,
-        endDate   = row.endDate,
-        roomId    = row.roomId;
+    var start_date = row.start_date,
+        end_date   = row.end_date,
+        room_id    = row.room_id;
 
-    var dateKey = formatDayKey(new Date(startDate));
+    var dateKey = formatDayKey(new Date(start_date));
     var dayBlock = dayToRoomMap[dateKey];
     if (dayBlock) {
-      var classPeriods = dayBlock[roomId];
+      var classPeriods = dayBlock[room_id];
       if (classPeriods) {
         var sameInterval = function(v) {
-          return v.startDate === startDate && v.endDate === endDate;
+          return v.start_date === start_date && v.end_date === end_date;
         };
         var value = _.find(classPeriods, sameInterval);
         if (value) {
-          dayBlock[roomId] = _.difference(classPeriods, [value]);
+          dayBlock[room_id] = _.difference(classPeriods, [value]);
         }
       }
     }

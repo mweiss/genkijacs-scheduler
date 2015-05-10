@@ -23,8 +23,8 @@ function insertIntoCache(cache, id, value) {
 function deleteFromCache(cache, id, value) {
   var arr = cache[id];
   if (arr) {
-    cache[id] = _.filter(arr, function(v) { 
-      return v.studentId !== value.studentId && v.classId !== value.classId;
+    cache[id] = _.filter(arr, function(v) {
+      return v.student_id !== value.student_id && v.class_id !== value.class_id;
     });
   }
 }
@@ -32,8 +32,8 @@ function deleteFromCache(cache, id, value) {
 var ClassRegistrationStore = assign(FluxStore.createStore(), {
   initEntity: function() {
     return {
-      "classId": "",
-      "studentId": "",
+      "class_id": "",
+      "student_id": "",
       "start": "",
       "end": ""
     };
@@ -54,13 +54,13 @@ var ClassRegistrationStore = assign(FluxStore.createStore(), {
   },
 
   removeFromCache: function(v) {
-    deleteFromCache(studentIdCache, v.studentId, v);
-    deleteFromCache(classIdCache, v.classId, v);
+    deleteFromCache(studentIdCache, v.student_id, v);
+    deleteFromCache(classIdCache, v.class_id, v);
   },
 
   addToCache: function(v) {
-    insertIntoCache(studentIdCache, v.studentId, v);
-    insertIntoCache(classIdCache, v.classId, v);
+    insertIntoCache(studentIdCache, v.student_id, v);
+    insertIntoCache(classIdCache, v.class_id, v);
   }
 });
 

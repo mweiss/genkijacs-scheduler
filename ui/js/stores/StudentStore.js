@@ -9,12 +9,14 @@ var FluxStore = require("./FluxStore");
 var StudentStore = assign(FluxStore.createStore(), {
   initEntity: function(ui_id) {
     return {
-      "name_jp": "",
-      "name_en": "",
+      "firstname_jp": "",
+      "firstname_en": "",
+      "lastname_jp": "",
+      "lastname_en": "",
       "enrollment_intervals": [],
-      "primary_language": "",
-      "home_country": "",
-      "japanese_proficiency": "",
+      "primary_lang": "",
+      "country": "",
+      "japanese_level": "",
       "notes": "",
       "birthday": "1986-03-14T00:00:00.000Z"
     };
@@ -22,7 +24,7 @@ var StudentStore = assign(FluxStore.createStore(), {
 
   validateObject: function(obj) {
     var errors = [];
-    this.validateRequire(obj, ["name_jp", "name_en"], errors);
+    this.validateRequire(obj, ["firstname_jp", "firstname_en", "lastname_jp", "lastname_en"], errors);
     return errors;
   }
 });

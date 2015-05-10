@@ -12,17 +12,19 @@ var _colors = ["#F0F8FF", "#FAEBD7", "#00FFFF"];
 var TeacherStore = assign(FluxStore.createStore(), {
   initEntity: function(ui_id) {
     return {
-      "name_jp": "",
-      "name_en": "",
+      "firstname_jp": "",
+      "firstname_en": "",
+      "lastname_jp": "",
+      "lastname_en": "",
       "color": _colors[ui_id % _colors.length],
-      "classHours": 32,
+      "classHours": 0,
       "privateHours": 0,
-      "groupHours": 11
+      "groupHours": 0
     };
   },
   validateObject: function(obj) {
     var errors = [];
-    this.validateRequire(obj, ["name_jp", "name_en"], errors);
+    this.validateRequire(obj, ["firstname_jp", "firstname_en", "lastname_jp", "lastname_en"], errors);
     return errors;
   }
 });
