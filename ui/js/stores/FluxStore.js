@@ -20,9 +20,20 @@ function createStore() {
   var _valueMap = {};
   var _idMap = {};
 
+  var _loaded = false;
+  var _loadError = false;
+
   var store = assign({}, EventEmitter.prototype, {
     all: function() {
       return _values;
+    },
+
+    isLoaded: function() {
+      return _loaded;
+    },
+
+    isLoadError: function() {
+      return _loadError;
     },
 
     emitChange: function() {
@@ -180,6 +191,16 @@ function createStore() {
 
     findById: function(id) {
       return _idMap[id];
+    },
+
+    load: function(data) {
+      _loaded = true;
+      this.setAll(data);
+    },
+
+    loadError: function() {
+      _loadError = true;
+      this.emitChange();
     },
 
     setAll: function(values) {

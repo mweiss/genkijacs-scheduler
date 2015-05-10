@@ -4,6 +4,8 @@ var React          = require('react');
 
 var Router = require('react-router'); // or var Router = ReactRouter; in browsers
 
+var _ = require("underscore");
+
 var DefaultRoute = Router.DefaultRoute;
 var Link = Router.Link;
 var Route = Router.Route;
@@ -16,43 +18,82 @@ var ScheduleTab = require('./ScheduleTab.react');
 
 var AppActions = require('../actions/AppActions');
 
+var ClassPeriodStore = require('../stores/ClassPeriodStore');
+var ClassRegistrationStore = require('../stores/ClassRegistrationStore');
+var ClassStore = require('../stores/ClassStore');
+var RoomStore = require('../stores/RoomStore');
+var StudentStore = require('../stores/StudentStore');
+var TeacherStore = require('../stores/TeacherStore');
+
+var stores = [ClassPeriodStore, ClassRegistrationStore, ClassStore, RoomStore, StudentStore, TeacherStore];
+
 var GenkiSchedulerApp = React.createClass({
   getInitialState: function() {
-    return {};
+    return {
+      error: false,
+      loaded: false
+    };
+  },
+
+  _onChange: function() {
+    var error = false;
+    var loaded = true;
+
+    _.each(stores, function(store) {
+      error = error || store.isLoadError();
+      loaded = loaded && store.isLoaded();
+    });
+
+    this.setState({
+      error: error,
+      loaded: loaded
+    });
   },
 
   componentDidMount: function() {
-    // TODO: fill this in
+    _.each(stores, function(store) {
+      store.addChangeListener(this._onChange);
+    }, this);
+    AppActions.load();
   },
 
   componentWillUnmount: function() {
-    // TODO: fill this in
-  },
-
-  _onClick: function() {
-    AppActions.click();
+    _.each(stores, function(store) {
+      store.removeChangeListener(this._onChange);
+    }, this);
   },
 
   render: function() {
-     return (
-      <div onClick={this._onClick}className="GenkiScheduler">
-        <header>
-          <div className="TabHeaderBar">
-            <ul>
-              <li><Link to="schedule">Schedule</Link></li>
-              <li><Link to="classes">Classes</Link></li>
-              <li><Link to="teachers">Teachers</Link></li>
-              <li><Link to="students">Students</Link></li>
-            </ul>
-          </div>
-        </header>
+     if (this.state.loaded) {
+      return (
+        <div onClick={this._onClick}className="GenkiScheduler">
+          <header>
+            <div className="TabHeaderBar">
+              <ul>
+                <li><Link to="schedule">Schedule</Link></li>
+                <li><Link to="classes">Classes</Link></li>
+                <li><Link to="teachers">Teachers</Link></li>
+                <li><Link to="students">Students</Link></li>
+              </ul>
+            </div>
+          </header>
 
-        {/* this is the important part */}
-        <div className="main">
-        <RouteHandler/>
+          {/* this is the important part */}
+          <div className="main">
+          <RouteHandler/>
+          </div>
         </div>
-      </div>
-    );
+      );
+     }
+     else if (this.state.error) {
+       // replace with a friendly error message
+       return (<div>Error</div>);
+     }
+     else {
+       // replace with a friendly loading message
+       return (<div>Loading...</div>);
+     }
+
   }
 });
 

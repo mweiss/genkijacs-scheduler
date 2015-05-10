@@ -107,17 +107,17 @@ function updateMessages(entity, columns, obj, callback) {
         id: value
       }}).then(function(values) {
         var promises = [];
-        values.each(function(v) {
+        _.each(values, function(v) {
           var message = fetchMessageFromObject(column, v.lang, obj);
           if (message !== undefined) {
-            promises.push(db.Translation.updateAttributes({
+            promises.push(v.updateAttributes({
               text: message
             }));
           }
         });
         PromiseHelpers.chainPromises(promises, function(v) {
           recursiveUpdateMessages(i + 1);
-        })
+        });
       });
     }
     else {
@@ -125,7 +125,7 @@ function updateMessages(entity, columns, obj, callback) {
     }
   }
 
-  rescursiveUpdateMessages(0);
+  recursiveUpdateMessages(0);
 }
 
 /**
@@ -140,7 +140,6 @@ function createMessages(columns, obj, callback) {
     if (i < columns.length) {
      var column = columns[i];
      db.Translation.create({lang: "en", text: fetchMessageFromObject(column, "en", obj)}).then(function(enMessage) {
-       console.log(enMessage);
        var jpMsg = {id: enMessage.id, lang: "jp", text: fetchMessageFromObject(column, "jp", obj)};
        messageIds[column] = enMessage.id;
        db.Translation.create(jpMsg).then(function(jpMessage) {
@@ -181,14 +180,14 @@ var SaveEntities = {
   /**
    * Callback after the main entity has been updated.
    */
-  afterUpdate: function(entity, callback) {
+  afterUpdate: function(obj, entity, callback) {
     callback(entity);
   },
 
   /**
    * Callback after the main entity has been updated.
    */
-  afterCreate: function(entity, callback) {
+  afterCreate: function(obj, entity, callback) {
     callback(entity);
   },
 
@@ -235,12 +234,13 @@ var SaveEntities = {
    * Helper method which converts json date strings back to json dates.
    */
   convertDates: function(entity) {
-    this.dateAttributes.each(function(attribute) {
+    _.each(this.dateAttributes, function(attribute) {
       var v = entity[attribute];
       if (v && typeof v === "string") {
         entity[attribute] = new Date(v);
       }
-    })
+    });
+    return entity;
   },
 
   /**
@@ -255,7 +255,6 @@ var SaveEntities = {
         callback(response);
         return;
       }
-
       var v = this.convertDates(entities[i]);
       if (v.id) {
         this.updateEntity(v, _.bind(function() {
@@ -375,7 +374,7 @@ router.get("/teachers", function (req, res) {
 
 router.post("/teachers", createSaveUserRequest({
   subEntityAttributes: ["color"],
-  subModel: db.Student,
+  subModel: db.Teacher,
   type: "teacher"
 }));
 
@@ -395,7 +394,7 @@ router.get("/students", function (req, res) {
       var student = entity.student;
       obj.country = student.country;
       obj.primary_lang = student.primary_lang;
-      obj.jap_level = student.jap_level;
+      obj.japanese_level = student.japanese_level;
       obj.note = student.note;
     };
     fetchUsers(users, updateWithTeacherInfo, function(results) {
@@ -405,7 +404,7 @@ router.get("/students", function (req, res) {
 });
 
 router.post("/students", createSaveUserRequest({
-  subEntityAttributes: ["country", "primary_lang", "jap_level", "note", "birthday"],
+  subEntityAttributes: ["country", "primary_lang", "japanese_level", "note", "birthday"],
   dateAttributes: ["birthday"],
   subModel: db.Student,
   type: "student"
@@ -504,6 +503,7 @@ router.post("/class-periods", function(req, res) {
 
     if (i >= entities.length) {
       res.send(results);
+      return;
     }
 
     var v = entities[i];

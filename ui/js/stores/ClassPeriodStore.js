@@ -125,12 +125,18 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.CLASS_PERIOD_EDIT:
       ClassPeriodStore.edit(action.row);
       break;
-      
+    
+    case SchedulerConstants.CLASS_PERIOD_LOAD:
+      ClassPeriodStore.load(action.data);
+      break;
+
+    case SchedulerConstants.CLASS_PERIOD_LOAD_ERROR:
+      ClassPeriodStore.loadError();
+      break;
+
     default:
       // no op
   }
 });
-
-ClassPeriodStore.setAll([]);
 
 module.exports = ClassPeriodStore;

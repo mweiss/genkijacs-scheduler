@@ -8,6 +8,7 @@ module.exports = {
       results.push(res);
       if (i < promises.length) {
         promises[i].then(chain);
+        i += 1;
       }
       else {
         next(results);

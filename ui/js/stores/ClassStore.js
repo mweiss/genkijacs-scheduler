@@ -39,31 +39,18 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.CLASS_DISCARD:
       ClassStore.discard();
       break;
-      
+
+    case SchedulerConstants.CLASS_LOAD:
+      ClassStore.load(action.data);
+      break;
+
+    case SchedulerConstants.CLASS_LOAD_ERROR:
+      ClassStore.loadError();
+      break;
+
     default:
       // no op
   }
 });
-
-// TODO: this is just here to simulate a network request to the class store,
-// I need to get this working for realz
-ClassStore.setAll([{
-  "id": 1, 
-  "name_jp": "原宿",
-  "name_en": "Harajuku",
-  "type": "normal"
-},
-{
-  "id":2, 
-  "name_jp": "浅草",
-  "name_en": "Asakusa",
-  "type": "normal"
-},
-{
-  "id":3, 
-  "name_jp": "会話授業",
-  "name_en": "Conversation A",
-  "type": "conversation"
-}]);
 
 module.exports = ClassStore;

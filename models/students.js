@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     id: { type: DataTypes.INTEGER, primaryKey: true },
     country: DataTypes.STRING, 
     primary_lang: DataTypes.STRING,
-    jap_level: DataTypes.STRING,
+    japanese_level: DataTypes.STRING,
     note: DataTypes.STRING,
     birthday: DataTypes.DATE
   });

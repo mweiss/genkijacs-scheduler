@@ -81,29 +81,18 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.CLASS_REGISTRATION_EDIT:
       ClassRegistrationStore.edit(action.row);
       break;
-      
+    
+    case SchedulerConstants.CLASS_REGISTRATION_LOAD:
+      ClassRegistrationStore.load(action.data);
+      break;
+
+    case SchedulerConstants.CLASS_REGISTRATION_LOAD_ERROR:
+      ClassRegistrationStore.loadError();
+      break;
+
     default:
       // no op
   }
 });
-
-ClassRegistrationStore.setAll([{
-  classId: 1,
-  studentId: 1,
-  start: "2015-01-03T00:00:00.000Z",
-  end: "2015-05-30T00:00:00.000Z"
-},
-{
-  classId: 3,
-  studentId: 1,
-  start: "2015-01-03T00:00:00.000Z",
-  end: "2015-02-28T00:00:00.000Z"
-},
-{
-  classId: 1,
-  studentId: 2,
-  start: "2015-01-10T00:00:00.000Z",
-  end: "2015-06-12T00:00:00.000Z"
-}]);
 
 module.exports = ClassRegistrationStore;

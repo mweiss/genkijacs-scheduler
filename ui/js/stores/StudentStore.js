@@ -45,31 +45,17 @@ AppDispatcher.register(function(action) {
       StudentStore.discard();
       break;
 
+    case SchedulerConstants.STUDENT_LOAD:
+      StudentStore.load(action.data);
+      break;
+
+    case SchedulerConstants.STUDENT_LOAD_ERROR:
+      StudentStore.loadError();
+      break;
+
     default:
       // no op
   }
 });
-
-StudentStore.setAll([{
-  "id":1, 
-  "name_jp": "マイケル　ワイス",
-  "name_en": "Michael Weiss",
-  "enrollment_intervals": [{id: 1, start: "2015-01-03T00:00:00.000Z", end: "2015-05-30T00:00:00.000Z"}],
-  "primary_language": "英語",
-  "home_country": "米国",
-  "japanese_proficiency": "中級レベル",
-  "notes": "かっこいい！",
-  "birthday": "1986-03-21T00:00:00.000Z"
-}, {
-  "id":2, 
-  "name_jp": "サシャ　ドウシェン",
-  "name_en": "Sascha Duschen",
-  "enrollment_intervals": [{id: 2, start: "2015-01-10T00:00:00.000Z", end: "2015-06-12T00:00:00.000Z"}],
-  "primary_language": "ドイツ語",
-  "home_country": "スイス",
-  "japanese_proficiency": "中級レベル",
-  "notes": "お金持ち",
-  "birthday": "1986-03-14T00:00:00.000Z"  
-}]);
 
 module.exports = StudentStore;
