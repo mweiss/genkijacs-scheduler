@@ -48,6 +48,10 @@ AppDispatcher.register(function(action) {
       ClassStore.loadError();
       break;
 
+    case SchedulerConstants.CLASS_UPDATE_IDS:
+      ClassStore.updateIds(action.data);
+      break;
+      
     default:
       // no op
   }

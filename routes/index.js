@@ -305,7 +305,6 @@ var SaveUserEntities = _.extend({}, SaveEntities, {
     var entities = _.map(req.body || [], function(v) {
       return _.extend({}, v, {type: this.type});
     }, this);
-
     this.saveEntities(entities, function(response) {
       res.send(response);
     });
@@ -317,14 +316,19 @@ var SaveUserEntities = _.extend({}, SaveEntities, {
   afterUpdate: function(obj, entity, callback) {
     var subEntityAttributes = this.subEntityAttributes;
     var subModel = this.subModel;
+    var self = this;
 
     // update the sub model
     subModel.find(obj.id).then(function(val) {
       var attributesToUpdate = _.pick(obj, subEntityAttributes);
       val.updateAttributes(attributesToUpdate).then(function() {
-        callback(entity);
+        self.afterSubModel(obj, entity, callback);
       });
     });
+  },
+
+  afterSubModel: function(obj, entity, callback) {
+    callback(entity);
   },
 
   /**
@@ -333,11 +337,12 @@ var SaveUserEntities = _.extend({}, SaveEntities, {
   afterCreate: function(obj, entity, callback) {
     var subEntityAttributes = this.subEntityAttributes;
     var subModel = this.subModel;
+    var self = this;
 
     var subEntity = _.pick(obj, subEntityAttributes);
     subEntity.id = entity.id;
     subModel.create(subEntity).then(function() {
-      callback(entity);
+      self.afterSubModel(obj, entity, callback);
     });
   }
 });
@@ -403,10 +408,41 @@ router.get("/students", function (req, res) {
   });
 });
 
+var SaveClassRegistrations = _.extend({}, SaveEntities, {
+  entityAttributes: ["class_id", "student_id", "start_date", "end_date", "creation_date"],
+  dateAttributes: ["start_date", "end_date"],
+  model: db.Class_Registration
+});
+
 router.post("/students", createSaveUserRequest({
   subEntityAttributes: ["country", "primary_lang", "japanese_level", "note", "birthday"],
   dateAttributes: ["birthday"],
   subModel: db.Student,
+  afterSubModel: function(obj, entity, callback) {
+    if (obj.classes) {
+
+      // TODO: This is BAD, but for now, let's delete and create new class registrations every time
+      // Delete all the previous class registrations
+      db.sequelize.query("UPDATE class_registrations set deletion_date = sysdate() where student_id = ?",  {
+        replacements: [entity.id]}).spread(function(results, metadata) {
+          console.log('spread');
+          var classRegistrations = obj.classes;
+          _.each(classRegistrations, function(cr) {
+            cr.student_id = entity.id;
+            cr.creation_date = new Date();
+            delete cr.id;
+          });
+          console.log(classRegistrations);
+          SaveClassRegistrations.saveEntities(classRegistrations, function() {
+            callback(entity);
+          });
+        });
+      // 
+    }
+    else {
+      callback(entity);
+    }
+  },
   type: "student"
 }));
 
@@ -534,6 +570,9 @@ router.post("/class-periods", function(req, res) {
       }
     });
   }
+
+  updateClassPeriodsRecursive(0);
+  
 });
 
 module.exports = router;

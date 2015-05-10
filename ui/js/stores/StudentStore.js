@@ -55,6 +55,10 @@ AppDispatcher.register(function(action) {
       StudentStore.loadError();
       break;
 
+    case SchedulerConstants.STUDENT_UPDATE_IDS:
+      StudentStore.updateIds(action.data);
+      break;
+      
     default:
       // no op
   }

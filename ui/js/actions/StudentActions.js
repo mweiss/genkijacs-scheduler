@@ -3,6 +3,8 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SchedulerConstants = require('../constants/SchedulerConstants');
 var WebAPIUtils = require('../http/WebAPIUtils');
+var ActionUtils = require('./ActionUtils');
+
 var ClassRegistrationStore = require("../stores/ClassRegistrationStore");
 var _ = require("underscore");
 
@@ -22,25 +24,33 @@ var StudentActions = {
   },
 
   save: function() {
-    /*
-    WebAPIUtils.makeRequest({
-      url: '/students',
-      method: 'post',
-      data: student,
-      success: function(resp) {
-        console.log('SA.update.success', resp);
-      }
-    });
-    */
-
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.STUDENT_VALIDATE_AND_SAVE,
       success: function(values) {
-        // Save the students and class registrations
-        // update the class registrations.  TODO, for now, we'll just update class regs
-        _.each(values, function(v) {
-          ClassRegistrationStore.saveAssociations(v);
+        var savedValues = _.map(values, function(v) {
+          return {id: v.id, editData: v.editData};
         });
+
+        var callback = ActionUtils.createEditCallback('/students', SchedulerConstants.STUDENT_UPDATE_IDS, function(ids) {
+          // Update the students ids on the class registrations
+          _.each(ids, function(id) {
+            var sv = savedValues[id.idx]
+            if (sv.editData.classes) {
+              sv.id = id.id;
+              _.each(sv.editData.classes, function(cr) {
+                cr.student_id = id.id;
+              });  
+            }
+          });
+
+          _.each(savedValues, function(v) {
+            if (v.editData.classes) {
+              ClassRegistrationStore.saveAssociations(v);
+            }
+          });
+        });
+
+        callback(values);
       }
     });
   },

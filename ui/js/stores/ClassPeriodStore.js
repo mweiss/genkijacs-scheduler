@@ -115,6 +115,8 @@ var ClassPeriodStore = assign(FluxStore.createStore(), {
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case SchedulerConstants.CLASS_PERIOD_SAVE:
+      action.success([{editData: action.row}]);
+      ClassPeriodStore.edit(action.row);
       ClassPeriodStore.save(action.row);
       break;
 
@@ -122,16 +124,16 @@ AppDispatcher.register(function(action) {
       ClassPeriodStore.append();
       break;
 
-    case SchedulerConstants.CLASS_PERIOD_EDIT:
-      ClassPeriodStore.edit(action.row);
-      break;
-    
     case SchedulerConstants.CLASS_PERIOD_LOAD:
       ClassPeriodStore.load(action.data);
       break;
 
     case SchedulerConstants.CLASS_PERIOD_LOAD_ERROR:
       ClassPeriodStore.loadError();
+      break;
+
+    case SchedulerConstants.CLASS_PERIOD_UPDATE_IDS:
+      ClassPeriodStore.updateIds(action.data);
       break;
 
     default:

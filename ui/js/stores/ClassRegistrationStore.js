@@ -89,6 +89,10 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.CLASS_REGISTRATION_LOAD_ERROR:
       ClassRegistrationStore.loadError();
       break;
+      
+    case SchedulerConstants.CLASS_REGISTRATION_UPDATE_IDS:
+      ClassRegistrationStore.updateIds(action.data);
+      break;
 
     default:
       // no op

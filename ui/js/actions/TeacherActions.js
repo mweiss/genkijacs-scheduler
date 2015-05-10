@@ -3,6 +3,7 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SchedulerConstants = require('../constants/SchedulerConstants');
 var WebAPIUtils = require('../http/WebAPIUtils');
+var ActionUtils = require('./ActionUtils');
 
 var TeacherActions = {
 
@@ -19,23 +20,10 @@ var TeacherActions = {
     });
   },
 
-  save: function(teacher) {
-    /*
-    WebAPIUtils.makeRequest({
-      url: '/teachers',
-      method: 'post',
-      data: teacher,
-      success: function(resp) {
-        console.log('TA.update.success', resp);
-      }
-    });
-    */
-
+  save: function() {
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.TEACHER_VALIDATE_AND_SAVE,
-      success: function() {
-        console.log('success!');
-      }
+      success: ActionUtils.createEditCallback('/teachers', SchedulerConstants.TEACHER_UPDATE_IDS)
     });
   },
 

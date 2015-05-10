@@ -3,6 +3,7 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SchedulerConstants = require('../constants/SchedulerConstants');
 var WebAPIUtils = require('../http/WebAPIUtils');
+var ActionUtils = require('./ActionUtils');
 
 // TODO: Room, student and teacher actions are very very similar... we can probably combine them
 var RoomActions = {
@@ -25,6 +26,8 @@ var RoomActions = {
       }
     });
     */
+    var updateMethod = ActionUtils.createEditCallback('/rooms', SchedulerConstants.ROOM_UPDATE_IDS);
+    updateMethod([room]);
 
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.ROOM_SAVE,

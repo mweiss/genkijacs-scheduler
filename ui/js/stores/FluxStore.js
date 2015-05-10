@@ -91,6 +91,17 @@ function createStore() {
       return valid;
     },
 
+    updateIds: function(data) {
+      _.each(data, function(v) {
+        var d = _valueMap[v.ui_id];
+        if (d && !d.id) {
+          d.id = v.id;
+          this._updateCaches(d);
+        }
+      }, this);
+      this.emitChange();
+    },
+
     validateRequire: function(obj, keys, errs) {
       _.each(keys, function(key) {
         if (!obj[key]) {
@@ -104,6 +115,7 @@ function createStore() {
       if (row) {
         var editData = row.editData || {};
         editData = _.extend(editData, data);
+        delete editData.editData;
         row.editData = editData;
         this.emitChange();
       }

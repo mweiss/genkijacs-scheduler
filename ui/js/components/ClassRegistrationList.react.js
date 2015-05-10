@@ -74,8 +74,8 @@ var ClassRegistrationList = React.createClass({
     }
 
     if (value.start) {
-      oldValue.start = this._formatDateValue(value, oldValue, "start");
-      oldValue.end = this._formatDateValue(value, oldValue, "end");
+      oldValue.start_date = this._formatDateValue(value, oldValue, "start");
+      oldValue.end_date = this._formatDateValue(value, oldValue, "end");
     }
     else {
       oldValue.class_id = value || oldValue.class_id || "";
@@ -86,7 +86,7 @@ var ClassRegistrationList = React.createClass({
   },
 
   renderReadListItem: function(v) {
-    return [this._findClassName(v), this.formattedDate(v.start), (<span> - </span>), this.formattedDate(v.end)]
+    return [this._findClassName(v), this.formattedDate(v.start_date), (<span> - </span>), this.formattedDate(v.end_date)]
   },
 
   renderEditListItem: function(obj) {
@@ -105,16 +105,16 @@ var ClassRegistrationList = React.createClass({
       <TextFieldDateRangePicker key={obj.i}
                                      onSelect={obj.onSelect}
                                      autoFocus={obj.autoFocus}
-                                     startDate={this.parseDate(v.start)}
-                                     endDate={this.parseDate(v.end)} />]);
+                                     startDate={this.parseDate(v.start_date)}
+                                     endDate={this.parseDate(v.end_date)} />]);
   },
 
   emptyItem: function() {
-    return {start: "", end: "", class_id: "", student_id: this.props.data.id};
+    return {start_date: "", end_date: "", class_id: "", student_id: this.props.data.id};
   },
 
   showDeleteButton: function(v) {
-    return v.start && true;
+    return v.start_date && true;
   }
 
   // Other methods,  TODO: consolidate or move this somewhere so that I don't repeat

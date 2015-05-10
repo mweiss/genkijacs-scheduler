@@ -9,6 +9,7 @@ module.exports = keyMirror({
   TEACHER_EDIT: null,
   TEACHER_LOAD: null,
   TEACHER_LOAD_ERROR: null,
+  TEACHER_UPDATE_IDS: null,
 
   STUDENT_VALIDATE_AND_SAVE: null,
   STUDENT_DISCARD: null,
@@ -16,6 +17,7 @@ module.exports = keyMirror({
   STUDENT_EDIT: null,
   STUDENT_LOAD: null,
   STUDENT_LOAD_ERROR: null,
+  STUDENT_UPDATE_IDS: null,
 
   CLASS_VALIDATE_AND_SAVE: null,
   CLASS_DISCARD: null,
@@ -23,21 +25,27 @@ module.exports = keyMirror({
   CLASS_EDIT: null,
   CLASS_LOAD: null,
   CLASS_LOAD_ERROR: null,
+  CLASS_UPDATE_IDS: null,
 
   CLASS_REGISTRATION_SAVE: null,
   CLASS_REGISTRATION_NEW: null,
   CLASS_REGISTRATION_EDIT: null,
   CLASS_REGISTRATION_LOAD: null,
   CLASS_REGISTRATION_LOAD_ERROR: null,
+  CLASS_REGISTRATION_UPDATE_IDS: null,
 
   ROOM_SAVE: null,
   ROOM_NEW: null,
   ROOM_EDIT: null,
   ROOM_LOAD: null,
   ROOM_LOAD_ERROR: null,
+  ROOM_UPDATE_IDS: null,
 
+  CLASS_PERIOD_SAVE: null,
+  CLASS_PERIOD_NEW: null,
+  CLASS_PERIOD_EDIT: null,
   CLASS_PERIOD_LOAD: null,
   CLASS_PERIOD_LOAD_ERROR: null,
-  
-  APP_CLICK: null
+  CLASS_PERIOD_UPDATE_IDS: null
+
 });

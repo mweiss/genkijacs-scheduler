@@ -12,6 +12,9 @@ var ClassPeriodStore = require("../stores/ClassPeriodStore");
 var RoomStore        = require("../stores/RoomStore");
 var ClassStore       = require("../stores/ClassStore");
 var TeacherStore     = require("../stores/TeacherStore");
+
+var ClassPeriodActions = require("../actions/ClassPeriodActions");
+
 var TextInput        = require('./TextInput.react');
 var ReactSelect      = require('react-select');
 
@@ -65,23 +68,21 @@ var ClassPeriodCell = React.createClass({
     return _.map(TeacherStore.all(), function(val) {
       return {
         value: "" + val.id,
-        label: val.name_jp
+        label: val.lastname_jp
       };
     });
   },
 
   onClassSelect: function(v) {
     var cp = _.clone(this._findClassPeriod());
-    cp.class_id = v;
-    ClassPeriodStore.edit(cp);
-    ClassPeriodStore.save(cp);
+    cp.class_id = +v;
+    ClassPeriodActions.save(cp);
   },
 
   onTeacherSelect: function(v) {
     var cp = _.clone(this._findClassPeriod());
-    cp.teacher_id = v;
-    ClassPeriodStore.edit(cp);
-    ClassPeriodStore.save(cp);
+    cp.teacher_id = +v;
+    ClassPeriodActions.save(cp);
   },
 
   _onFocus: function(lbl) {
@@ -175,7 +176,7 @@ var ClassPeriodCell = React.createClass({
     }
     else {
       var t = TeacherStore.findById(tid);
-      teacherInput = (<input className={tsNames.join(" ")} onFocus={this._onFocus("teacherFocused")} readOnly={true} value={t ? t.name_jp : teacherPlaceholder} />)
+      teacherInput = (<input className={tsNames.join(" ")} onFocus={this._onFocus("teacherFocused")} readOnly={true} value={t ? t.lastname_jp : teacherPlaceholder} />)
     }
     var classNames = ["ClassPeriodCell"];
     if (this.props.lastCell) {

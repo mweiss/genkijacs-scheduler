@@ -6,7 +6,7 @@ var WebAPIUtils = require('../http/WebAPIUtils');
 
 function loadStore(successAction, failureAction, url) {
   WebAPIUtils.makeRequest({
-    url: '/classes',
+    url: url,
     method: 'get',
     success: function(resp) {
       var d = JSON.parse(resp);

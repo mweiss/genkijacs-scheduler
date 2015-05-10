@@ -3,6 +3,7 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SchedulerConstants = require('../constants/SchedulerConstants');
 var WebAPIUtils = require('../http/WebAPIUtils');
+var ActionUtils = require('./ActionUtils');
 
 // TODO: Classes, student and teacher actions are very very similar... we can probably combine them
 var ClassPeriodActions = {
@@ -15,20 +16,12 @@ var ClassPeriodActions = {
   },
 
   save: function(cl) {
-    /*
-    WebAPIUtils.makeRequest({
-      url: '/classes',
-      method: 'post',
-      data: cl,
-      success: function(resp) {
-        console.log('SA.update.success', resp);
-      }
-    });
-    */
-
+    var updateMethod = ActionUtils.createEditCallback('/class-periods', SchedulerConstants.CLASS_PERIOD_UPDATE_IDS);
+    
     AppDispatcher.dispatch({
       actionType: SchedulerConstants.CLASS_PERIOD_SAVE,
-      row: cl
+      row: cl,
+      success: updateMethod
     });
   },
 

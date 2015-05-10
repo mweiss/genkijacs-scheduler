@@ -38,6 +38,10 @@ AppDispatcher.register(function(action) {
     case SchedulerConstants.ROOM_LOAD_ERROR:
       RoomStore.loadError();
       break;
+
+    case SchedulerConstants.ROOM_UPDATE_IDS:
+      RoomStore.updateIds(action.data);
+      break;
       
     default:
       // no op

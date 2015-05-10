@@ -1,5 +1,85 @@
 'use strict';
 
+function createRooms(migration, done) {
+  var rooms = [{
+    "name_jp": "１番",
+    "name_en": "Room 1",
+    "capacity": 7
+  },
+  {
+    "name_jp": "２番",
+    "name_en": "Room 2",
+    "capacity": 7
+  },
+  {
+    "name_jp": "３番",
+    "name_en": "Room 3",
+    "capacity": 7
+  },
+  {
+    "name_jp": "４番",
+    "name_en": "Room 4",
+    "capacity": 7
+  },
+  {
+    "name_jp": "５番",
+    "name_en": "Room 5",
+    "capacity": 7
+  },
+  {
+    "name_jp": "６番",
+    "name_en": "Room 6",
+    "capacity": 7
+  },
+  {
+    "name_jp": "７番",
+    "name_en": "Room 7",
+    "capacity": 7
+  },
+  {
+    "name_jp": "８番",
+    "name_en": "Room 8",
+    "capacity": 7
+  },
+  {
+    "name_jp": "９番",
+    "name_en": "Room 9",
+    "capacity": 7
+  }];
+
+  var sequelize = migration.sequelize;
+
+  // TODO: This is ugly as hell... I need to just force a syncronous query.
+  function recursiveUpdate(i) {
+    if (i >= rooms.length) {
+      done();
+      return;
+    }
+    var room = rooms[i];
+    sequelize.query(
+      "INSERT INTO translations (lang, text) values(?, ?)",
+      {replacements: ['jp', room.name_jp]}).spread(
+      function(val) {
+        var insertId = val.insertId;
+        sequelize.query(
+          "INSERT INTO translations (id, lang, text) values(?, ?, ?)",
+          {replacements: [insertId, 'en', room.name_en]}).spread(
+          function() {
+            sequelize.query(
+              "INSERT INTO rooms (capacity, name, creation_date) values(?, ?, sysdate())",
+              {replacements: [room.capacity, insertId]}).spread(
+              function() {
+                recursiveUpdate(i + 1);
+              }
+            );
+          }
+        );
+      }
+    );
+  }
+
+  recursiveUpdate(0);
+}
 module.exports = {
   up: function(migration, DataTypes, done) {
 
@@ -70,7 +150,7 @@ module.exports = {
       text: DataTypes.STRING
     }, options);
 
-    done();
+    createRooms(migration, done);
   },
 
   down: function(migration, DataTypes, done) {
