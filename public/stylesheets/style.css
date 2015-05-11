@@ -1,8 +1,36 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 0px;
+  font: 12pt "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+table {
+  border: solid, 1px;
+  border-collapse: collapse;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 80%;
+}
+
+.wrapper {
+  width: 184mm;
+  padding: 0px;
+
+}
+
+.infobox {
+  width: 50%;
+  float: left;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.day {
+  width: 50%;
+  float: left;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

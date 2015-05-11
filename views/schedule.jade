@@ -1,16 +1,25 @@
 extends layout
-
 block content
 
   each item in user
-    h1= title
-    div(id='info') infobox
-      p= item.firstname
     
-    img(src='http://www.genkijacs.com/images/logo.png')
-    div(id='day1') day1
-    div(id='day2') day2
-    div(id='day3') day3
-    div(id='day4') day4
-    div(id='day5') day5
-  
+    div(class='wrapper')
+      div(class='infobox') infobox
+        p= item.firstname
+        img(src='http://www.genkijacs.com/images/logo.png')
+
+      - for(i = 0; i < 5; i++)
+        div(class='day') table #{i}
+          table(border='1')
+            tr
+              td time
+              td class
+              td room
+              td teacher
+            - for(x = 0; x < 11; x++)
+              tr
+                td cell1
+                td cell2
+                td cell3
+                td cell4
+    br
