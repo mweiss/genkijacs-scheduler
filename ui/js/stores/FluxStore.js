@@ -181,8 +181,6 @@ function createStore() {
       if (!silenceChange) {
         this.emitChange();
       }
-      console.log(_values);
-      console.log(_valueMap);
     },
 
     removeFromCache: function() {

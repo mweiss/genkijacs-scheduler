@@ -55,58 +55,32 @@ var ClassPeriodCell = React.createClass({
     };
   },
 
-  _findClassList: function() {
-    return _.map(ClassStore.all(), function(val) {
+  _findOptions: function(store, lbl) {
+    return _.map(store.all(), function(val) {
       return {
         value: "" + val.id,
-        label: val.name_jp
+        label: val[lbl]
       };
     });
   },
 
-  _findTeacherList: function() {
-    return _.map(TeacherStore.all(), function(val) {
-      return {
-        value: "" + val.id,
-        label: val.lastname_jp
-      };
-    });
-  },
-
-  onClassSelect: function(v) {
-    var cp = _.clone(this._findClassPeriod());
-    if (!v) {
-      cp.class_id = null;
-    }
-    else {
-      cp.class_id = +v;
-    }
-    ClassPeriodActions.save(cp);
-  },
-
-  onTeacherSelect: function(v) {
-    var cp = _.clone(this._findClassPeriod());
-    if (!v) {
-      cp.teacher_id = null;
-    }
-    else {
-      cp.teacher_id = +v;
-    }
-    ClassPeriodActions.save(cp);
-  },
-
-  _onFocus: function(lbl) {
-    return _.bind(function(e) {
-      var state = _.clone(this.state);
-      state[lbl] = true;
-      this.setState(state);
+  _onSelect: function(param) {
+    return _.bind(function(v) {
+      var cp = _.clone(this._findClassPeriod());
+      if (!v) {
+        cp[param] = null;
+      }
+      else {
+        cp[param]= +v;
+      }
+      ClassPeriodActions.save(cp);
     }, this);
   },
 
-  _onBlur: function(lbl) {
+  _createFocusHandler: function(lbl, v) {
     return _.bind(function(e) {
       var state = _.clone(this.state);
-      state[lbl] = false;
+      state[lbl] = v;
       this.setState(state);
     }, this);
   },
@@ -134,59 +108,55 @@ var ClassPeriodCell = React.createClass({
     return classPeriod;
   },
 
-  render: function() {
-    var classPeriod = this._findClassPeriod();
-    var cid = classPeriod.class_id || null;
-    var tid = classPeriod.teacher_id || null;
-    var classPlaceholder = "何もない";
-    var teacherPlaceholder = "誰もいない";
-
-    var classInput;
-    var teacherInput;
-
-    var csNames = ["ClassList"];
-    var tsNames = ["TeacherList"];
-
-    if (cid) {
-      csNames.push("ListSelected");
-    }
-    if (tid) {
-      tsNames.push("ListSelected");
+  renderSelectComponent: function(placeholder, id, className, onSelect, stateLbl, store, lbl) {
+    var classNames = [className];
+    if (id) {
+      classNames.push("ListSelected");
     }
 
-    if (this.state.classFocused) {
-      classInput = (<ReactSelect
-          placeholder={classPlaceholder}
-          className={csNames.join(" ")}
-          value={cid ? "" + cid : null}
+    var input;
+    if (this.state[stateLbl]) {
+      input = (<ReactSelect
+          placeholder={placeholder}
+          className={classNames.join(" ")}
+          value={id ? "" + id : null}
           clearValueText="Clear"
-          options={this._findClassList()}
-          onChange={this.onClassSelect}
+          options={this._findOptions(store, lbl)}
+          onChange={onSelect}
           autoFocus={true}
-          onBlur={this._onBlur("classFocused")}
+          onBlur={this._createFocusHandler(stateLbl, false)}
         />)
     }
     else {
-      var c = ClassStore.findById(cid);
-      classInput = (<input className={csNames.join(" ")} onFocus={this._onFocus("classFocused")} readOnly={true} value={c ? c.name_jp : classPlaceholder} />)
+      var c = store.findById(id);
+      input = (<input className={classNames.join(" ")}
+                           onFocus={this._createFocusHandler(stateLbl, true)}
+                           readOnly={true}
+                           value={c ? c[lbl] : placeholder} />);
     }
 
+    return input;
+  },
 
-    if (this.state.teacherFocused) {
-      teacherInput = (<ReactSelect
-          placeholder={teacherPlaceholder}
-          className={tsNames.join(" ")}
-          value={tid ? "" + tid : null}
-          autoFocus={true}
-          onBlur={this._onBlur("teacherFocused")}
-          options={this._findTeacherList()}
-          onChange={this.onTeacherSelect}
-        />);
-    }
-    else {
-      var t = TeacherStore.findById(tid);
-      teacherInput = (<input className={tsNames.join(" ")} onFocus={this._onFocus("teacherFocused")} readOnly={true} value={t ? t.lastname_jp : teacherPlaceholder} />)
-    }
+  render: function() {
+    var classPeriod = this._findClassPeriod();
+
+    var classInput = this.renderSelectComponent("何もない",
+      classPeriod.class_id || null,
+      "ClassList",
+      this._onSelect("class_id"),
+      'classFocused',
+      ClassStore,
+      'name_jp');
+
+    var teacherInput = this.renderSelectComponent("誰もいない",
+      classPeriod.teacher_id || null,
+      "TeacherList",
+      this._onSelect("teacher_id"),
+      'teacherFocused',
+      TeacherStore,
+      'lastname_jp');
+
     var classNames = ["ClassPeriodCell"];
     if (this.props.lastCell) {
       classNames.push("ClassPeriodLastCell");

@@ -401,6 +401,7 @@ router.get("/students", function (req, res) {
       obj.primary_lang = student.primary_lang;
       obj.japanese_level = student.japanese_level;
       obj.note = student.note;
+      obj.birthday = student.birthday;
     };
     fetchUsers(users, updateWithTeacherInfo, function(results) {
       res.send(JSON.stringify(results));
@@ -572,7 +573,7 @@ router.post("/class-periods", function(req, res) {
   }
 
   updateClassPeriodsRecursive(0);
-  
+
 });
 
 module.exports = router;

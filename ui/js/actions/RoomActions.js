@@ -16,16 +16,6 @@ var RoomActions = {
   },
 
   save: function(room) {
-    /*
-    WebAPIUtils.makeRequest({
-      url: '/rooms',
-      method: 'post',
-      data: cl,
-      success: function(resp) {
-        console.log('SA.update.success', resp);
-      }
-    });
-    */
     var updateMethod = ActionUtils.createEditCallback('/rooms', SchedulerConstants.ROOM_UPDATE_IDS);
     updateMethod([room]);
 
