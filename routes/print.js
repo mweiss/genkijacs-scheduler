@@ -5,6 +5,10 @@ var router = express.Router();
 var db = require('../models/index');
 var _ = require("underscore");
 
+/**
+ * Fetches the user's first and last names in the specified language.  When finished,
+ * this method invokes callback with the fetched names.
+ */
 function fetchUserNames(userId, lang, callback) {
    var query = "SELECT u.id AS id, t1.text AS firstname, t2.text AS lastname\n" +
                "FROM users u, translations t1, translations t2\n" +
@@ -21,6 +25,10 @@ function fetchUserNames(userId, lang, callback) {
   });
 }
 
+/**
+ * Fetch the class periods from startDate to endDate that the student is registered for.
+ * The text provided will be in the language specified.
+ */
 function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
   var query = "SELECT cp.start_date AS start_date,\n" +
               "       cp.end_date AS end_date,\n" +
@@ -38,8 +46,8 @@ function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
               "AND   cr.end_date >= ?\n" +
               "AND   cr.deletion_date is null\n" +
               "AND   cp.class_id = cr.class_id\n" +
-              "AND   cp.start_date >= ?\n" +
-              "AND   cp.end_date <= ?\n" +
+              "AND   cp.start_date >= cr.start_date\n" +
+              "AND   cp.end_date <= cr.end_date + 1\n" +
               "AND   cl.id = cr.class_id\n" +
               "AND   t1.id = cl.name\n" +
               "AND   t1.lang = ?\n" +
@@ -49,7 +57,7 @@ function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
 
   db.sequelize.query(query,
     { 
-      replacements: [userId, startDate, endDate, startDate, endDate, lang, lang],
+      replacements: [userId, endDate, startDate, lang, lang],
       type: db.sequelize.QueryTypes.SELECT
     }
   ).then(function(class_periods) {
@@ -57,6 +65,15 @@ function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
   });
 }
 
+/**
+ *  TODO: This method is a hack. Since out rooms don't have room rows, we can't do an 
+ *  inner join on rooms in the fetchClassPeriods query.  There's probably a way of doing a smart
+ *  left join and naming out rooms in the query... but for now we'll just do a separate query to
+ *  figure out the name of the class period rooms.
+ *
+ *  Returns a callback that will scan through the class periods provided by fetchClassPeriods
+ *  and will add the 'room' parameter with the room name in the given language.  
+ */
 function fetchRoomNameCallback(lang, classPeriodsCallback, callbackReady) {
 
   var query = "SELECT r.id AS id, t1.text AS name\n" +
@@ -88,6 +105,10 @@ function fetchRoomNameCallback(lang, classPeriodsCallback, callbackReady) {
   });
 }
 
+/**
+ * Finds all the students with class registrations between startDate and endDate.  Calls callback with
+ * an array of student ids.
+ */
 function findStudentsWithClassRegistrations(startDate, endDate, callback) {
   var query = "SELECT DISTINCT cr.student_id as id\n" +
               "FROM class_registrations cr\n" +
@@ -96,7 +117,7 @@ function findStudentsWithClassRegistrations(startDate, endDate, callback) {
               "AND cr.end_date >= ?\n";
 
   db.sequelize.query(query, {
-    replacements: [startDate, endDate], type: db.sequelize.QueryTypes.SELECT
+    replacements: [endDate, startDate], type: db.sequelize.QueryTypes.SELECT
   }).then(function(students) {
     callback(students.map(function(student) {
       return student.id;
@@ -104,18 +125,60 @@ function findStudentsWithClassRegistrations(startDate, endDate, callback) {
   })
 }
 
+/**
+ * Fetches the template data for the given userId in the given language, with class periods between startDate
+ * and endDate.  Here is an example of the template for the user:
+ * { id: 4, // user id
+ *   firstname: 'Sascha',
+ *   lastname: 'Duschén',
+ *   classPeriods: [ 
+ *     { start_date: Mon May 11 2015 09:30:00 GMT+0900 (JST),
+ *       end_date: Mon May 11 2015 10:20:00 GMT+0900 (JST),
+ *       class: 'Harajuku',
+ *       teacher: 'Miyazaki',
+ *       room_id: 1,
+ *       rooom: 'Room 1'
+ *     }
+ *   ]
+ */
 function fetchTemplateData(userId, lang, startDate, endDate, callback) {
 
   function classPeriodCallback(classPeriods) {
     fetchUserNames(userId, lang, function(name) {
       var templateData = _.clone(name);
       templateData.classPeriods = classPeriods;
+      console.log(templateData);
       callback(templateData);
     });
   }
 
   fetchRoomNameCallback(lang, classPeriodCallback, function(fixRoomCallback) {
     fetchClassPeriods(userId, lang, startDate, endDate, fixRoomCallback);
+  });
+}
+
+/**
+ * Prints all the students with active class registrations between startDate and endDate in the provided
+ * language.
+ */
+function printAllStudents(userId, startDate, endDate, lang) {
+  findStudentsWithClassRegistrations(startDate, endDate, function(users) {
+    var i = 0, results = [];
+    function recursiveFindStudents() {
+      if (i >= users.length) {
+        res.render('multiple-schedules', {
+          results: results
+        });
+      }
+      else {
+        fetchTemplateData(users[i], lang, startDate, endDate, function(td) {
+          results.push(td);
+          i += 1;
+          recursiveFindStudents();
+        });
+      }
+    }
+    recursiveFindStudents();
   });
 }
 
@@ -136,26 +199,11 @@ router.get("/student", function (req, res) {
   var lang = 'en';
 
   endDate.setDate(endDate.getDate() + 5);
+  // If there's no userId, then print all the active students
   if (!userId) {
-    findStudentsWithClassRegistrations(startDate, endDate, function(users) {
-      var i = 0, results = [];
-      function recursiveFindStudents() {
-        if (i >= users.length) {
-          res.render('multiple-schedules', {
-            results: results
-          });
-        }
-        else {
-          fetchTemplateData(users[i], lang, startDate, endDate, function(td) {
-            results.push(td);
-            i += 1;
-            recursiveFindStudents();
-          });
-        }
-      }
-      recursiveFindStudents();
-    });
+    printAllStudents(userId, startDate, endDate, lang);
   }
+  // If there's a specified user, then just render the template for them
   else {
     fetchTemplateData(userId, lang, startDate, endDate, function(templateData) {
       res.render('schedule', {
