@@ -25,16 +25,49 @@ function fetchUserNames(userId, lang, callback) {
   });
 }
 
+var ClassPeriodColumns = "SELECT cp.start_date AS start_date,\n" +
+                         "       cp.end_date AS end_date,\n" +
+                         "       t1.text AS class,\n" +
+                         "       t2.text AS teacher,\n" +
+                         "       cp.room_id AS room_id\n";
+
+/**
+ * Fetch the class periods from startDate to endDate that the teacher is registered for.
+ * The text provided will be in the language specified.
+ */
+function fetchTeacherClassPeriods(userId, lang, startDate, endDate, callback) {
+  var query = ClassPeriodColumns +
+              "FROM classes cl,\n" +
+              "     users u,\n" +
+              "     class_periods cp,\n" +
+              "     translations t1,\n" +
+              "     translations t2\n" +
+              "WHERE cp.teacher_id = ?\n" +
+              "AND   cp.start_date >= ?\n" +
+              "AND   cp.end_date <= ?\n" +
+              "AND   cl.id = cp.class_id\n" +
+              "AND   t1.id = cl.name\n" +
+              "AND   t1.lang = ?\n" +
+              "AND   u.id = cp.teacher_id\n" +
+              "AND   t2.id = u.lastname\n" +
+              "AND   t2.lang = ?\n";
+
+  db.sequelize.query(query,
+    { 
+      replacements: [userId, startDate, endDate, lang, lang],
+      type: db.sequelize.QueryTypes.SELECT
+    }
+  ).then(function(class_periods) {
+    callback(class_periods);
+  });
+}
+
 /**
  * Fetch the class periods from startDate to endDate that the student is registered for.
  * The text provided will be in the language specified.
  */
-function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
-  var query = "SELECT cp.start_date AS start_date,\n" +
-              "       cp.end_date AS end_date,\n" +
-              "       t1.text AS class,\n" +
-              "       t2.text AS teacher,\n" +
-              "       cp.room_id AS room_id\n" +
+function fetchStudentClassPeriods(userId, lang, startDate, endDate, callback) {
+  var query = ClassPeriodColumns +
               "FROM class_registrations cr,\n" +
               "     classes cl,\n" +
               "     users u,\n" +
@@ -50,14 +83,13 @@ function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
               "AND   cp.end_date <= cr.end_date + 1\n" +
               "AND   cp.start_date >= ?\n" +
               "AND   cp.end_date <= ?\n" +
-              "AND   cl.id = cr.class_id\n" +
+              "AND   cl.id = cp.class_id\n" +
               "AND   t1.id = cl.name\n" +
               "AND   t1.lang = ?\n" +
               "AND   u.id = cp.teacher_id\n" +
               "AND   t2.id = u.lastname\n" +
               "AND   t2.lang = ?\n";
 
-  console.log(startDate, endDate);
   db.sequelize.query(query,
     { 
       replacements: [userId, endDate, startDate, startDate, endDate, lang, lang],
@@ -109,7 +141,7 @@ function fetchRoomNameCallback(lang, classPeriodsCallback, callbackReady) {
 }
 
 /**
- * Finds all the students with class registrations between startDate and endDate.  Calls callback with
+ * Finds all the students with class registrations that intersect startDate and endDate.  Calls callback with
  * an array of student ids.
  */
 function findStudentsWithClassRegistrations(startDate, endDate, callback) {
@@ -129,9 +161,28 @@ function findStudentsWithClassRegistrations(startDate, endDate, callback) {
 }
 
 /**
+ * Finds all the teachers with class periods between start and end date.
+ */
+function findTeachersWithClassPeriods(startDate, endDate, callback) {
+  var query = "SELECT DISTINCT cp.teacher_id as id\n" +
+              "FROM class_periods cp\n" +
+              "WHERE cp.start_date >= ?\n" +
+              "AND cp.end_date <= ?\n";
+
+  db.sequelize.query(query, {
+    replacements: [startDate, endDate], type: db.sequelize.QueryTypes.SELECT
+  }).then(function(teachers) {
+    callback(teachers.map(function(teacher) {
+      return teacher.id;
+    }));
+  })
+}
+
+/**
  * Fetches the template data for the given userId in the given language, with class periods between startDate
  * and endDate.  Here is an example of the template for the user:
- * { id: 4, // user id
+ * { 
+ *   id: 4, // user id
  *   firstname: 'Sascha',
  *   lastname: 'Duschén',
  *   classPeriods: [ 
@@ -143,8 +194,9 @@ function findStudentsWithClassRegistrations(startDate, endDate, callback) {
  *       rooom: 'Room 1'
  *     }
  *   ]
+ * }
  */
-function fetchTemplateData(userId, lang, startDate, endDate, callback) {
+function fetchTemplateData(userId, lang, startDate, endDate, fetchClassPeriods, callback) {
 
   function classPeriodCallback(classPeriods) {
     fetchUserNames(userId, lang, function(name) {
@@ -164,8 +216,8 @@ function fetchTemplateData(userId, lang, startDate, endDate, callback) {
  * Prints all the students with active class registrations between startDate and endDate in the provided
  * language.
  */
-function printAllStudents(userId, startDate, endDate, lang) {
-  findStudentsWithClassRegistrations(startDate, endDate, function(users) {
+function printAll(res, userId, startDate, endDate, lang, findAllUsers, fetchClassPeriods) {
+  findAllUsers(startDate, endDate, function(users) {
     var i = 0, results = [];
     function recursiveFindStudents() {
       if (i >= users.length) {
@@ -174,7 +226,7 @@ function printAllStudents(userId, startDate, endDate, lang) {
         });
       }
       else {
-        fetchTemplateData(users[i], lang, startDate, endDate, function(td) {
+        fetchTemplateData(users[i], lang, startDate, endDate, fetchClassPeriods, function(td) {
           results.push(td);
           i += 1;
           recursiveFindStudents();
@@ -185,58 +237,42 @@ function printAllStudents(userId, startDate, endDate, lang) {
   });
 }
 
+
 /**
  * Request parameters:
- *   startDate, (optional) userId
+ *   startDate, (optional userId)
  */
-router.get("/student", function (req, res) {
-  var startDate = req.query.startDate ? new Date(req.query.startDate) : null;
-  var userId    = req.query.userId ? +req.query.userId : null;
+function processPrintRequest(lang, fetchClassPeriods, findAllUsers) {
+  return function(req, res) {
+    var startDate = req.query.startDate ? new Date(req.query.startDate) : null;
+    var userId    = req.query.userId ? +req.query.userId : null;
 
-  if (!startDate || isNaN(startDate.getTime())) {
-    res.sendStatus(400);
-    return;
-  }
+    if (!startDate || isNaN(startDate.getTime())) {
+      res.sendStatus(400);
+      return;
+    }
 
-  var endDate = new Date(startDate);
-  var lang = 'en';
+    var endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 5);
 
-  endDate.setDate(endDate.getDate() + 5);
-  // If there's no userId, then print all the active students
-  if (!userId) {
-    printAllStudents(userId, startDate, endDate, lang);
-  }
-  // If there's a specified user, then just render the template for them
-  else {
-    fetchTemplateData(userId, lang, startDate, endDate, function(templateData) {
-      res.render('schedule', {
-        data: templateData
+    // If there's no userId, then print all the active students
+    if (!userId) {
+      printAll(res, userId, startDate, endDate, lang, findAllUsers, fetchClassPeriods);
+    }
+    // If there's a specified user, then just render the template for them
+    else {
+      fetchTemplateData(userId, lang, startDate, endDate, fetchClassPeriods, function(templateData) {
+        res.render('schedule', {
+          data: templateData
+        });
       });
-    });
+    }  
   }
-});
-
-/* print teacher */
-router.get("/teacher", function (req, res) {
- // This probably very similar to students, in that the only differences
- res.render('schedule', { title: 'teacher schedule', user: req.param("user") });
-  
-});
-
-/* print class */
-router.get("/class", function (req, res) {
-
-  res.render('schedule', { title: 'class schedule', user: req.param("class") });
-  
-});
+}
 
 
-/* print all */
-router.get("/overview", function (req, res) {
-  
-  res.render('schedule', { title: 'overview' });
-  
-});
+router.get("/student", processPrintRequest('en', fetchStudentClassPeriods, findStudentsWithClassRegistrations));
 
+router.get("/teacher", processPrintRequest('jp', fetchTeacherClassPeriods, findTeachersWithClassPeriods));
 
 module.exports = router;
