@@ -48,6 +48,8 @@ function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
               "AND   cp.class_id = cr.class_id\n" +
               "AND   cp.start_date >= cr.start_date\n" +
               "AND   cp.end_date <= cr.end_date + 1\n" +
+              "AND   cp.start_date >= ?\n" +
+              "AND   cp.end_date <= ?\n" +
               "AND   cl.id = cr.class_id\n" +
               "AND   t1.id = cl.name\n" +
               "AND   t1.lang = ?\n" +
@@ -55,9 +57,10 @@ function fetchClassPeriods(userId, lang, startDate, endDate, callback) {
               "AND   t2.id = u.lastname\n" +
               "AND   t2.lang = ?\n";
 
+  console.log(startDate, endDate);
   db.sequelize.query(query,
     { 
-      replacements: [userId, endDate, startDate, lang, lang],
+      replacements: [userId, endDate, startDate, startDate, endDate, lang, lang],
       type: db.sequelize.QueryTypes.SELECT
     }
   ).then(function(class_periods) {
