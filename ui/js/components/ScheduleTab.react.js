@@ -101,7 +101,9 @@ var ClassPeriodCell = React.createClass({
     }, this);
 
     var intervalStart = createTime(date, interval.hour, interval.minute);
-    var intervalEnd = createTime(date, interval.hour + interval.length, interval.minute + interval.length);
+    var intervalEnd = createTime(date,
+      interval.hour + Math.floor((interval.length + interval.minute) / 60),
+      (interval.minute + interval.length) % 60);
 
     classPeriod = classPeriod || {start_date: intervalStart, end_date: intervalEnd, room_id: roomId};
 

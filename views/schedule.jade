@@ -1,25 +1,4 @@
 extends layout
 block content
 
-  each item in user
-    
-    div(class='wrapper')
-      div(class='infobox') infobox
-        p= item.firstname
-        img(src='http://www.genkijacs.com/images/logo.png')
-
-      - for(i = 0; i < 5; i++)
-        div(class='day') table #{i}
-          table(border='1')
-            tr
-              td time
-              td class
-              td room
-              td teacher
-            - for(x = 0; x < 11; x++)
-              tr
-                td cell1
-                td cell2
-                td cell3
-                td cell4
-    br
+    div(class='wrapper') test
