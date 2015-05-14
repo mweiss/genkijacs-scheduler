@@ -3,7 +3,9 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../models/index');
+var intervals = require('../helpers/intervals').intervals;
 var _ = require("underscore");
+var moment = require("moment");
 
 /**
  * Fetches the user's first and last names in the specified language.  When finished,
@@ -167,7 +169,8 @@ function findTeachersWithClassPeriods(startDate, endDate, callback) {
   var query = "SELECT DISTINCT cp.teacher_id as id\n" +
               "FROM class_periods cp\n" +
               "WHERE cp.start_date >= ?\n" +
-              "AND cp.end_date <= ?\n";
+              "AND cp.end_date <= ?\n" +
+              "AND cp.teacher_id is not null\n";
 
   db.sequelize.query(query, {
     replacements: [startDate, endDate], type: db.sequelize.QueryTypes.SELECT
@@ -176,6 +179,57 @@ function findTeachersWithClassPeriods(startDate, endDate, callback) {
       return teacher.id;
     }));
   })
+}
+
+function formatDataForTemplate(data, startDate, lang) {
+  var daysOfTheWeek = [
+    {name_en: "Monday", name_jp: "月曜" },
+    {name_en: "Tuesday", name_jp: "火曜" },
+    {name_en: "Wednesday", name_jp: "水曜" },
+    {name_en: "Thursday", name_jp: "木曜" },
+    {name_en: "Friday", name_jp: "金曜" }
+  ];
+
+  var headers = daysOfTheWeek.map(function(day, i) {
+    return {
+      date: moment(startDate).add(i, 'days').format('MM/DD'),
+      name: day["name_" + lang]
+    }
+  });
+
+
+  var ivals = intervals.map(function(interval, i) {
+
+    // TODO: I need to resolve times correctly!  This is a huge hack to just use whatever gets passed in.
+    var start = moment(startDate).add(interval.hour, 'hours').add(interval.minute, 'minutes');
+    var end = moment(start).add(interval.length, 'minutes');
+    var intervalHeader = start.format('h:mm') + '-' + end.format('h:mm');
+    var periods = daysOfTheWeek.map(function(v, day) {
+      var startInterval = moment(start).add(day, 'days');
+      var period = {cName: "", teacher: "", room: ""};
+      var cp = _.find(data.classPeriods, function(v) {
+        return startInterval.isSame(v.start_date);
+      });
+      if (cp) { 
+        period.cName = cp["class"];
+        period.teacher = cp.teacher;
+        period.room = cp.room;
+      }
+      return period;
+    });
+
+    return {
+      header: intervalHeader,
+      periods: periods
+    };
+  });
+
+  return {
+    firstname: data.firstname,
+    lastname: data.lastname,
+    headers: headers,
+    intervals: ivals,
+  };
 }
 
 /**
@@ -202,8 +256,9 @@ function fetchTemplateData(userId, lang, startDate, endDate, fetchClassPeriods, 
     fetchUserNames(userId, lang, function(name) {
       var templateData = _.clone(name);
       templateData.classPeriods = classPeriods;
-      console.log(templateData);
-      callback(templateData);
+      var data = formatDataForTemplate(templateData, startDate, lang);
+      console.log(require('util').inspect(data, true, 10), templateData);
+      callback(data);
     });
   }
 
@@ -263,7 +318,7 @@ function processPrintRequest(lang, fetchClassPeriods, findAllUsers) {
     else {
       fetchTemplateData(userId, lang, startDate, endDate, fetchClassPeriods, function(templateData) {
         res.render('schedule', {
-          data: templateData
+          result: templateData
         });
       });
     }  

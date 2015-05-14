@@ -80,6 +80,48 @@ $lightGreyTextColor: #aaaaaa;
     position: relative;
     height: 50px;
 
+    .PrintScheduleModal {
+      right: 196px;
+      margin-top: 40px;
+      h3 {
+        margin-top: 10px;
+        margin-left: 10px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      z-index: 100;
+      position: absolute;
+      width: 500px;
+      background-color: white;
+      border: 2px solid $pink;
+
+      .Select {
+        width: 300px;
+        margin-left: 10px;
+      }
+
+      ul {
+        margin: 10px;
+        li {
+          margin: 10px;
+
+          label {
+            margin-left: 5px;
+          }
+        }
+      }
+
+      .buttonGroup {
+        margin: 10px 0 10px 0;
+        width: 100%;
+        text-align: right;
+        .btn {
+          margin-right: 10px;
+        }
+      }
+    }
+
     h2 {
       float: left;
       top: 20px;

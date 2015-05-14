@@ -17,6 +17,7 @@ var ClassPeriodActions = require("../actions/ClassPeriodActions");
 
 var TextInput        = require('./TextInput.react');
 var ReactSelect      = require('react-select');
+var PrintScheduleModal = require('./PrintScheduleModal.react');
 
 function createTime(date, hour, minute) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute).toJSON();
@@ -24,12 +25,33 @@ function createTime(date, hour, minute) {
 
 var DateHeader = React.createClass({
   getInitialState: function() {
-    return {};
+    return {
+      printOpen: false
+    };
+  },
+
+  _onPrintClick: function(e) {
+    this.setState({
+      printOpen: true
+    });
+  },
+
+  onPrintClose: function() {
+    this.setState({
+      printOpen: false
+    });
   },
 
   render: function() {
     var startDate = this.props.startDate;
     var endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 5);
+    var printModalHeader = null;
+
+    if (this.state.printOpen) {
+      printModalHeader = (<PrintScheduleModal 
+        onClose={this.onPrintClose}
+        startDate={startDate} />);
+    }
 
     return (
       <div className="DateHeader">
@@ -40,8 +62,9 @@ var DateHeader = React.createClass({
          </div>
          <div className="actionBtnGroup">
            <button className="btn">Copy last week</button>
-           <button className="btn">Print schedules</button>
+           <button className="btn" onClick={this._onPrintClick}>Print schedules</button>
          </div>
+         {printModalHeader}
       </div>
     );
   }
@@ -424,7 +447,6 @@ var ScheduleTab = React.createClass({
     {
       daySchedules.push((<DaySchedule date={date} intervals={this.state.intervals} />));
     }
-    // for each day in the week from monday to friday, add a DaySchedule
 
     return (
       <div>

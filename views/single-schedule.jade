@@ -1,0 +1,19 @@
+div(class='wrapper')
+  header
+    span #{result.firstname} #{result.lastname}
+  table.schedule
+    tr.header
+      th.sideHeader
+      each header in result.headers
+        th.dayHeader
+          div= header.name
+          div= header.date
+    each interval in result.intervals
+      tr.scheduleRow
+        td.intervalHeader= interval.header
+        each period in interval.periods
+          td
+            div= period.cName
+            div= period.teacher
+            div.last= period.room
+footer

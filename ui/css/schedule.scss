@@ -1,0 +1,61 @@
+$scheduleRowHeight: 15mm;
+$tableWidth: 180mm;
+$divPadding: 2mm;
+$divHeight: 5mm;
+$tableScheduleColor: #ccc;
+$fontSize: 3mm;
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
+
+@media print {
+  footer {
+    page-break-after: always;
+  }
+}
+
+.wrapper {
+
+  font-family: 'Open Sans', sans-serif;
+  color: #4B4E6B;
+  font-size: $fontSize;
+
+  .schedule {
+  width: $tableWidth;
+
+  .header {
+    td {
+      height: $scheduleRowHeight;
+    }
+  }
+
+
+  th.sideHeader {
+    width: 20%;
+  }
+
+  th.dayHeader {
+    width: 16%;
+  }
+
+  .scheduleRow {
+    .intervalHeader {
+
+    }
+
+    td {
+      border: 1px solid $tableScheduleColor;
+      height: $scheduleRowHeight;
+
+      div {
+        height: $divHeight;
+        padding-left: $divPadding;
+        border-bottom: 1px dashed $tableScheduleColor;
+      }
+
+      div.last {
+        border-bottom: 0px none;
+      }
+    }
+  }
+}
+}

@@ -1,0 +1,26 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
+@media print {
+  footer {
+    page-break-after: always; } }
+
+.wrapper {
+  font-family: 'Open Sans', sans-serif;
+  color: #4B4E6B;
+  font-size: 3mm; }
+  .wrapper .schedule {
+    width: 180mm; }
+    .wrapper .schedule .header td {
+      height: 15mm; }
+    .wrapper .schedule th.sideHeader {
+      width: 20%; }
+    .wrapper .schedule th.dayHeader {
+      width: 16%; }
+    .wrapper .schedule .scheduleRow td {
+      border: 1px solid #ccc;
+      height: 15mm; }
+      .wrapper .schedule .scheduleRow td div {
+        height: 5mm;
+        padding-left: 2mm;
+        border-bottom: 1px dashed #ccc; }
+      .wrapper .schedule .scheduleRow td div.last {
+        border-bottom: 0px none; }
