@@ -56,7 +56,7 @@ var PrintScheduleModal = React.createClass({
       break;
       case "single_teacher":
       url = teacherURL;
-      data.push({name: 'userId', value: this.state.selectedStudent});
+      data.push({name: 'userId', value: this.state.selectedTeacher});
       break;
       default:
       // no op
@@ -101,7 +101,7 @@ var PrintScheduleModal = React.createClass({
       this._onStudentSelect);
 
     var teacherSelect = this.renderSelectElement(TeacherStore,
-      this.state.selectedStudent,
+      this.state.selectedTeacher,
       this._onTeacherSelect);
 
     // TODO: Oh god!  This needs a helper method ASAP!
